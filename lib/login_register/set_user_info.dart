@@ -20,28 +20,39 @@ class _SetuserState extends State<Setuser> {
   TextEditingController _heightController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
   List<Widget> textFieldList = [];
+  String password = '';
+  String email = '';
   int id = 0;
   @override
   void initState() {
     super.initState();
+    _loadUserInfo();
   }
 
-  Future<void> _saveUserInfo() async {
+  Future<void> _loadUserInfo() async {
+    SharedPreferences user_info = await SharedPreferences.getInstance();
+    String loadpassword = user_info.getString('Password') ?? '';
+    String loademail = user_info.getString('Email') ?? '';
+    setState(() {
+      password = loadpassword;
+      email = loademail;
+    });
+  }
+
+  void _saveUserInfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     user_info.setString('name', _nameController.text);
     user_info.setString('bloodType', _bloodTypeController.text);
     user_info.setString('gender', _genderController.text);
     user_info.setString('height', _heightController.text);
-    user_info.setString('weight', _weightController.text);
-    user_info.setString('disease', _diseaseController.text);
+    user_info.setInt('weight', int.parse(_weightController.text));
+    user_info.setInt('disease', int.parse(_diseaseController.text));
   }
 
   void postData(String name, String gender, String weight, String height,
       String bloody) async {
-    SharedPreferences user_info = await SharedPreferences.getInstance();
-    String password = user_info.getString('Password') ?? '';
-    String email = user_info.getString('Email') ?? '';
-
+    int w = int.parse(weight);
+    int h = int.parse(height);
     const String url =
         'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list';
     Map<String, dynamic> data = {
@@ -49,17 +60,16 @@ class _SetuserState extends State<Setuser> {
       "password": "$password",
       "email": "$email",
       "gender": "$gender",
-      "weight": int.parse(weight),
-      "height": int.parse(height),
+      "weight": w,
+      "height": h,
       "blood_type": "$bloody",
-      "disease": [],
       "username": "$name"
     };
     var body = jsonEncode(data);
     var response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'}, body: body);
-    if (response.statusCode == 200) {
-      response = await http.get(Uri.parse(url + '/$id'));
+    if (response.statusCode == 201) {
+      response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final users = jsonDecode(response.body);
         for (final user in users) {
@@ -68,8 +78,9 @@ class _SetuserState extends State<Setuser> {
               SharedPreferences user_info =
                   await SharedPreferences.getInstance();
               user_info.setInt('id', user['id']);
-              Navigator.pushNamed(context, '/');
             }
+
+            Navigator.pushNamed(context, '/');
 
             break;
           }
@@ -91,14 +102,17 @@ class _SetuserState extends State<Setuser> {
     } else {
       showDialog(
           context: context,
-          builder: (context) =>
-              AlertDialog(title: Text('알림'), content: Text('오류2'), actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("확인"))
-              ]));
+          builder: (context) => AlertDialog(
+                  title: Text('알림'),
+                  content: Text(
+                      '${response.statusCode} $name $gender $weight $height $bloody $password $email'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("확인"))
+                  ]));
     }
   }
 
@@ -106,13 +120,14 @@ class _SetuserState extends State<Setuser> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
-    final screenHeight = mediaQuery.size.height;
 
     return Scaffold(
         body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         width: screenWidth,
         child: Column(children: [
+          Text(email),
+          Text(password),
           TextField(
             controller: _nameController,
             decoration: InputDecoration(labelText: '이름'),
@@ -141,7 +156,7 @@ class _SetuserState extends State<Setuser> {
       ),
       ElevatedButton(
           onPressed: () {
-            _saveUserInfo;
+            _saveUserInfo();
             if (_nameController.text.isEmpty ||
                 _bloodTypeController.text.isEmpty ||
                 _genderController.text.isEmpty ||
@@ -169,7 +184,12 @@ class _SetuserState extends State<Setuser> {
               );
             }
           },
-          child: Text('저장'))
+          child: Text('저장')),
+      ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/');
+          },
+          child: Text('홈으로'))
     ]));
   }
 }

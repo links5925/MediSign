@@ -1,4 +1,4 @@
-// ignore_for_file: sort_child_properties_last, prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: sort_child_properties_last, prefer_const_literals_to_create_immutables, prefer_const_constructors, sized_box_for_whitespace, file_names, camel_case_types, non_constant_identifier_names
 //경로 재설정
 
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
   String? name;
   String profile = '';
   bool namecheck = false;
-  int id = 0;
+  int? id;
   @override
   void initState() {
     _loadName();
@@ -24,9 +24,9 @@ class _Default_DrawerState extends State<Default_Drawer> {
 
   Future<void> _loadName() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
-    String name = user_info.getString('name') ?? '';
+    name = user_info.getString('name');
     profile = user_info.getString('profile') ?? '';
-    id = user_info.getInt('id') ?? 0;
+    id = user_info.getInt('id');
     if (name != '') {
       namecheck = true;
     }

@@ -12,7 +12,7 @@ class Medicine_detail extends StatefulWidget {
 
 class _Medicine_detailState extends State<Medicine_detail> {
   late var Medicine;
-  String name = '';
+  String? name;
   bool fold_1 = false;
   bool fold_2 = true;
   @override
@@ -23,7 +23,10 @@ class _Medicine_detailState extends State<Medicine_detail> {
 
   Future<void> _loadUserInfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
-    name = user_info.getString('post_name') ?? '';
+    String loadname = user_info.getString('post_name') ?? '';
+    setState(() {
+      name = loadname;
+    });
   }
 
   Future<void> get_medicines() async {
@@ -48,7 +51,6 @@ class _Medicine_detailState extends State<Medicine_detail> {
     final mediaQuery = MediaQuery.of(context);
     // 기기의 너비와 높이 가져오기
     final screenWidth = mediaQuery.size.width;
-    final screenHeight = mediaQuery.size.height;
 
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),

@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace, non_constant_identifier_names, file_names, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 

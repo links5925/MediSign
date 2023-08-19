@@ -18,14 +18,14 @@ class _HomePageState extends State<HomePage> {
   String name = '';
   String birthdate = '';
   String bloodType = '';
-  String disease = '';
+  var disease;
   String gender = '';
-  String height = '';
-  String weight = '';
+  int? height;
+  int? weight;
   var year = DateTime.now().year;
   var month = DateTime.now().month;
   bool fold = true;
-  
+
   @override
   void initState() {
     super.initState();
@@ -37,15 +37,13 @@ class _HomePageState extends State<HomePage> {
     String loadedName = user_info.getString('name') ?? '';
     String loadedBirthdate = user_info.getString('birthdate') ?? '';
     String loadedBloodType = user_info.getString('bloodType') ?? '';
-    String loadedDisease = user_info.getString('disease') ?? '';
     String loadgender = user_info.getString('gender') ?? '';
-    String loadheight = user_info.getString('height') ?? '';
-    String loadweight = user_info.getString('weight') ?? '';
+    int? loadheight = user_info.getInt('height');
+    int? loadweight = user_info.getInt('weight');
     setState(() {
       name = loadedName;
       birthdate = loadedBirthdate;
       bloodType = loadedBloodType;
-      disease = loadedDisease;
       gender = loadgender;
       height = loadheight;
       weight = loadweight;
@@ -54,10 +52,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery를 사용하여 기기 정보 가져오기
     final mediaQuery = MediaQuery.of(context);
-
-    // 기기의 너비와 높이 가져오기
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
 
@@ -167,15 +162,15 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Row(
                                   children: [
-                                    Text('$name',
-                                        style: TextStyle(
+                                    Text(name,
+                                        style: TextStyle(fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w400,
                                             fontSize: screenWidth * 0.038)),
                                     Transform.translate(
                                       offset: Offset(
                                           0, 1), // 두 번째 텍스트의 y축 위치를 조절합니다.
                                       child: Text(
-                                        '$name님',
+                                        '님',
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: screenWidth * 0.03),
@@ -227,63 +222,36 @@ class _HomePageState extends State<HomePage> {
                                                   });
                                                 }
                                               },
-                                              child: fold ? Text(
-                                                '자세히 보기',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize:
-                                                        screenWidth * 0.024,
-                                                    decoration: TextDecoration
-                                                        .underline),
-                                              ):Text('자세히 보기 닫기',style: TextStyle(color: Colors.black,fontSize: screenWidth*0.024,decoration: TextDecoration.underline),)),
+                                              child: fold
+                                                  ? Text(
+                                                      '자세히 보기',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize:
+                                                              screenWidth *
+                                                                  0.024,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline),
+                                                    )
+                                                  : Text(
+                                                      '자세히 보기 닫기',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize:
+                                                              screenWidth *
+                                                                  0.024,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline),
+                                                    )),
                                         )
                                       ],
                                     ),
                                     SizedBox(
                                       width: screenWidth * 0.14,
                                     ),
-                                    Container(
-                                      height: 0.036 * screenHeight,
-                                      width: 0.42 * screenWidth,
-                                      child: ElevatedButton(
-                                        onPressed: () {},
-                                        child: Transform.translate(
-                                          offset: Offset(-7, 0),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.mode_edit_outlined,
-                                                color: Colors.black,
-                                                size: 18,
-                                              ),
-                                              Transform.translate(
-                                                offset: Offset(6, 0),
-                                                child: Text(
-                                                  '복용 알림 설정하기',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 9),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      30), // 버튼 가장자리를 동그랗게 만듭니다.
-                                            ),
-                                          ),
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Color.fromRGBO(
-                                                      217, 217, 217, 1)),
-                                        ),
-                                      ),
-                                    ),
+                                    
                                   ],
                                 ),
                               ],

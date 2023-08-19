@@ -6,7 +6,6 @@ class Default_Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
 
     return Column(

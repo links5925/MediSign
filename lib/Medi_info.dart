@@ -1,7 +1,9 @@
 // ignore_for_file: sized_box_for_whitespace
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_medicine/Default_set/Default_AppBar.dart';
+import 'package:flutter_medicine/Default_set/Default_Logo.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -14,13 +16,12 @@ class Medi_info extends StatefulWidget {
 }
 
 class _Medi_infoState extends State<Medi_info> {
-  late List<Map<String, dynamic>> All_Medicine;
+  late List<dynamic> All_Medicine;
   bool fold_1 = false;
   bool fold_2 = true;
-  bool fold_3 = true;
-  late List<Widget> Output_Medi_List;
-  late int id;
-  late String? profile;
+  List<Widget> Output_Medi_List = [];
+  int? id;
+  String? profile;
   List<Widget> Prescription_List = [];
   late var prescriptions;
   @override
@@ -46,8 +47,12 @@ class _Medi_infoState extends State<Medi_info> {
 
   Future<void> _loadUserinfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
-    id = user_info.getInt('id') ?? 0;
-    profile = user_info.getString('profile');
+    int? loadid = user_info.getInt('id');
+    String? loadprofile = user_info.getString('profile');
+    setState(() {
+      id = loadid;
+      profile = loadprofile;
+    });
   }
 
   Future<void> get_medicines() async {
@@ -55,7 +60,7 @@ class _Medi_infoState extends State<Medi_info> {
         'https://medisign-hackthon-95c791df694a.herokuapp.com/medicines/medicine_list'));
     if (response.statusCode == 200) {
       // API 응답을 JSON으로 변환하여 파싱
-      List<Map<String, dynamic>> responseData = json.decode(response.body);
+      List<dynamic> responseData = json.decode(response.body);
       setState(() {
         All_Medicine = responseData;
       });
@@ -196,41 +201,73 @@ class _Medi_infoState extends State<Medi_info> {
                   ),
                 ),
                 child: Column(children: [
-                  Custom_Appbar(),
-                  Container(
-                    width: screenWidth,
-                    height: fold_1 ? 0.13 : 0.4,
-                    child: Column(
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              if (fold_1 == true) {
-                                setState(() {
-                                  fold_1 = false;
-                                });
-                              } else {
-                                setState(() {
-                                  fold_1 = true;
-                                });
-                              }
-                            },
-                            child: Row(
-                              children: [
-                                fold_1
-                                    ? Icon(Icons.keyboard_arrow_right_sharp)
-                                    : Icon(Icons.keyboard_arrow_down_sharp),
-                                Text('현재 복용 중')
-                              ],
-                            )),
-                        Row(
-                          children: Output_Medi_List,
-                        )
-                      ],
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
+                  Transform.translate(
+                    offset: Offset(screenWidth * 0.12, 0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Default_Logo(),
                     ),
                   ),
+                  SingleChildScrollView(
+                      child: Column(children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(15)),
+                      width: screenWidth * 0.8,
+                      height: fold_1
+                          ? screenHeight * 0.061
+                          : min(screenHeight * 0.061, screenHeight * 0.1) +
+                              screenHeight * 0.01,
+                      child: Column(
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                if (fold_1 == true) {
+                                  setState(() {
+                                    fold_1 = false;
+                                  });
+                                } else {
+                                  setState(() {
+                                    fold_1 = true;
+                                  });
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  fold_1
+                                      ? Icon(
+                                          Icons.keyboard_arrow_right_sharp,
+                                          color: Colors.black,
+                                        )
+                                      : Icon(
+                                          Icons.keyboard_arrow_down_sharp,
+                                          color: Colors.black,
+                                        ),
+                                  Text(
+                                    '현재 복용 중',
+                                    style: TextStyle(color: Colors.black),
+                                  )
+                                ],
+                              )),
+                          Row(
+                            children: Output_Medi_List,
+                          )
+                        ],
+                      ),
+                    ),
+                  ])),
+                  SizedBox(height: screenHeight * 0.015),
                   Container(
-                    width: screenWidth,
-                    height: fold_2 ? 50 : 350,
+                    margin: EdgeInsets.all(0),
+                    decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(15)),
+                    width: screenWidth * 0.8,
+                    height: fold_2 ? screenHeight * 0.061 : min(100, 10000),
                     child: Column(
                       children: [
                         TextButton(
@@ -248,9 +285,18 @@ class _Medi_infoState extends State<Medi_info> {
                           child: Row(
                             children: [
                               fold_1
-                                  ? Icon(Icons.keyboard_arrow_right_sharp)
-                                  : Icon(Icons.keyboard_arrow_down_sharp),
-                              Text('나의 조제 내역')
+                                  ? Icon(
+                                      Icons.keyboard_arrow_right_sharp,
+                                      color: Colors.black,
+                                    )
+                                  : Icon(
+                                      Icons.keyboard_arrow_down_sharp,
+                                      color: Colors.black,
+                                    ),
+                              Text(
+                                '나의 조제 내역',
+                                style: TextStyle(color: Colors.black),
+                              )
                             ],
                           ),
                         ),
@@ -270,9 +316,9 @@ class Prescription_image extends StatefulWidget {
 }
 
 class _Prescription_imageState extends State<Prescription_image> {
-  String? hospital = '';
-  String? url = '';
-  String? date = '';
+  String hospital = '';
+  String url = '';
+  String date = '';
 
   @override
   void initState() {
@@ -282,30 +328,35 @@ class _Prescription_imageState extends State<Prescription_image> {
 
   Future<void> _prescription_info() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
-    url = user_info.getString('prescription_image');
-    date = user_info.getString('prescription_date');
-    hospital = user_info.getString('hospital');
+    String loadurl = user_info.getString('prescription_image') ?? '';
+    String loaddate = user_info.getString('prescription_date') ?? '';
+    String loadhospital = user_info.getString('hospital') ?? '';
+    setState(() {
+      url = loadurl;
+      hospital = loadhospital;
+      date = loaddate;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final screenHeight = mediaQuery.size.height;
     final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
 
     return Scaffold(
-      appBar: AppBar(),
       body: Container(
         color: Colors.white.withOpacity(0.9),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         width: screenWidth * 0.9,
         child: Column(
           children: [
+            Default_Logo(),
             Row(
               children: [
                 Icon(Icons.arrow_right_sharp),
-                Text(date ?? ''),
-                Text(hospital ?? '')
+                Text(date),
+                Text(hospital)
               ],
             ),
             SizedBox(
@@ -314,7 +365,7 @@ class _Prescription_imageState extends State<Prescription_image> {
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               child: Image.network(
-                url ?? 'https://picsum.photos/200/200',
+                url,
                 width: screenWidth * 0.8,
                 fit: BoxFit.cover,
               ),
