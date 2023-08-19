@@ -163,7 +163,8 @@ class _HomePageState extends State<HomePage> {
                                 Row(
                                   children: [
                                     Text(name,
-                                        style: TextStyle(fontStyle: FontStyle.normal,
+                                        style: TextStyle(
+                                            fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w400,
                                             fontSize: screenWidth * 0.038)),
                                     Transform.translate(
@@ -251,7 +252,6 @@ class _HomePageState extends State<HomePage> {
                                     SizedBox(
                                       width: screenWidth * 0.14,
                                     ),
-                                    
                                   ],
                                 ),
                               ],

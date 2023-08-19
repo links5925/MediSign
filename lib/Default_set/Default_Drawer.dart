@@ -32,6 +32,12 @@ class _Default_DrawerState extends State<Default_Drawer> {
     }
   }
 
+  void _savelength(double width, double height) async {
+    SharedPreferences user_info = await SharedPreferences.getInstance();
+    user_info.setInt('Width', width.toInt());
+    user_info.setInt('Height', height.toInt());
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -75,7 +81,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                                         Color(0xff2036A7)),
                               ),
                               onPressed: () {
-                                Navigator.pushNamed(context, '/Login');
+                                Navigator.pushNamed(context, '/확인');
                               },
                               child: Row(
                                 children: [
@@ -224,6 +230,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                                 height: screenHeight * 0.055,
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    _savelength(screenWidth, screenHeight);
                                     Navigator.pushNamed(context, '/Medi_Bot');
                                   },
                                   child:
@@ -252,6 +259,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                                 height: screenHeight * 0.055,
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    _savelength(screenWidth, screenHeight);
                                     Navigator.pushNamed(context, '/Medi_Map');
                                   },
                                   child: Icon(Icons.location_on_outlined),

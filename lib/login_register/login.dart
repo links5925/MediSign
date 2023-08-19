@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
         'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list';
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final data = json.decode(utf8.decode(response.bodyBytes));
       for (final user in data) {
         if (user['email'] == email && user['password'] == password) {
           User = user;
@@ -76,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     user_info.setString('gender', User['gender']);
     user_info.setInt('height', User['height']);
     user_info.setInt('weight', User['weight']);
+    user_info.setInt('id', User['id']);
   }
 
   @override

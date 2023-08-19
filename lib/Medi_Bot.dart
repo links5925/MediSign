@@ -16,7 +16,7 @@ class Medi_Bot extends StatefulWidget {
 }
 
 class _Medi_BotState extends State<Medi_Bot> {
-  int id = 0;
+  int? id;
   List<Widget> Medi_Bot_History = [];
 
   @override
@@ -28,8 +28,10 @@ class _Medi_BotState extends State<Medi_Bot> {
 
   Future<void> _loadUserinfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
-
-    id = user_info.getInt('id') ?? 0;
+    int? loadid = user_info.getInt('id');
+    setState(() {
+      id = loadid;
+    });
   }
 
   Future<void> get_history() async {
@@ -238,7 +240,13 @@ class _Medi_BotState extends State<Medi_Bot> {
               height: screenHeight * 0.9,
               child: Column(
                 children: [
-                  Default_Logo(),
+                  Transform.translate(
+                    offset: Offset(screenWidth * 0.12, 0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Default_Logo(),
+                    ),
+                  ),
                   SingleChildScrollView(
                       child: Column(
                     children: [

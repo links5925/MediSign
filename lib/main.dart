@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_medicine/Medi_info.dart';
+import 'package:flutter_medicine/Medi_map.dart';
 import 'package:flutter_medicine/ocr.dart';
 import 'package:flutter_medicine/login_register/register.dart';
 import 'package:flutter_medicine/login_register/set_user_info.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late bool isLogin = false;
+  bool isLogin = false;
 
   @override
   void initState() {
@@ -40,13 +41,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> _loadUserInfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     int? id = user_info.getInt('id');
-    if (id == null) {
+    if (id != null) {
       setState(() {
         isLogin = true;
-      });
-    } else {
-      setState(() {
-        isLogin = false;
       });
     }
   }
@@ -55,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: isLogin ? '/' : '/Login',
+      initialRoute: isLogin ? '/Login' : '/',
       // initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),
@@ -67,7 +64,7 @@ class _MyAppState extends State<MyApp> {
         '/Directocr': (context) => Camera(),
         '/Startscreen': (context) => StartScreen(),
         '/Medi_Info': (context) => Medi_info(),
-        '/Medi_Map': (context) => Medi_Map(),
+        '/Map': (context) => Map(),
         '/Medi_Bot': (context) => Medi_Bot(),
         '/All_Alarm': (context) => All_Alarm(),
         '/Medi_Map': (context) => Medi_Map()

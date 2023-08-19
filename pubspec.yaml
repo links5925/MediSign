@@ -41,6 +41,7 @@ dependencies:
   flutter_local_notifications:
   webview_flutter:  
   geolocator:
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -89,6 +90,27 @@ flutter:
     - family: Custom_Icons
       fonts:
         - asset: assets/fonts/Custom_Icons.ttf
+    - family: NotoSansKR
+      fonts:
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-Black.ttf
+          weight: 900
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-Light.ttf
+          weight: 300
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/NotoSansKR/NotoSansKR-Thin.ttf
+          weight: 100
+
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

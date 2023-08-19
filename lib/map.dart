@@ -3,14 +3,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class Medi_Map extends StatefulWidget {
-  const Medi_Map({super.key});
+class Map extends StatefulWidget {
+  const Map({super.key});
 
   @override
-  State<Medi_Map> createState() => _Medi_MapState();
+  State<Map> createState() => _MapState();
 }
 
-class _Medi_MapState extends State<Medi_Map> {
+class _MapState extends State<Map> {
   late WebViewController? _webViewController;
   void _permission() async {
     var requestStatus = await Permission.location.request();

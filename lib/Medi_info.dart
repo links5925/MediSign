@@ -7,7 +7,7 @@ import 'package:flutter_medicine/Default_set/Default_Logo.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
+import 'Default_set/Default_BottomAppBar.dart';
 import 'Medicine_Detial.dart';
 
 class Medi_info extends StatefulWidget {
@@ -181,130 +181,139 @@ class _Medi_infoState extends State<Medi_info> {
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery를 사용하여 기기 정보 가져오기
     final mediaQuery = MediaQuery.of(context);
-    // 기기의 너비와 높이 가져오기
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
 
     return Scaffold(
-        body: SingleChildScrollView(
-            child: Container(
-                constraints: BoxConstraints(
-                  minHeight: screenHeight,
+      body: SingleChildScrollView(
+          child: Container(
+              constraints: BoxConstraints(
+                minHeight: screenHeight,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              ),
+              child: Column(children: [
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
+                Transform.translate(
+                  offset: Offset(screenWidth * 0.12, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Default_Logo(),
                   ),
                 ),
-                child: Column(children: [
-                  SizedBox(
-                    height: screenHeight * 0.02,
-                  ),
-                  Transform.translate(
-                    offset: Offset(screenWidth * 0.12, 0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Default_Logo(),
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      child: Column(children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(15)),
-                      width: screenWidth * 0.8,
-                      height: fold_1
-                          ? screenHeight * 0.061
-                          : min(screenHeight * 0.061, screenHeight * 0.1) +
-                              screenHeight * 0.01,
-                      child: Column(
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                if (fold_1 == true) {
-                                  setState(() {
-                                    fold_1 = false;
-                                  });
-                                } else {
-                                  setState(() {
-                                    fold_1 = true;
-                                  });
-                                }
-                              },
-                              child: Row(
-                                children: [
-                                  fold_1
-                                      ? Icon(
-                                          Icons.keyboard_arrow_right_sharp,
-                                          color: Colors.black,
-                                        )
-                                      : Icon(
-                                          Icons.keyboard_arrow_down_sharp,
-                                          color: Colors.black,
-                                        ),
-                                  Text(
-                                    '현재 복용 중',
-                                    style: TextStyle(color: Colors.black),
-                                  )
-                                ],
-                              )),
-                          Row(
-                            children: Output_Medi_List,
-                          )
-                        ],
-                      ),
-                    ),
-                  ])),
-                  SizedBox(height: screenHeight * 0.015),
+                SingleChildScrollView(
+                    child: Column(children: [
                   Container(
-                    margin: EdgeInsets.all(0),
                     decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(15)),
                     width: screenWidth * 0.8,
-                    height: fold_2 ? screenHeight * 0.061 : min(100, 10000),
+                    height: fold_1
+                        ? screenHeight * 0.061
+                        : min(screenHeight * 0.061, screenHeight * 0.1) +
+                            screenHeight * 0.01,
                     child: Column(
                       children: [
                         TextButton(
-                          onPressed: () {
-                            if (fold_2 == true) {
-                              setState(() {
-                                fold_2 = false;
-                              });
-                            } else {
-                              setState(() {
-                                fold_2 = true;
-                              });
-                            }
-                          },
-                          child: Row(
-                            children: [
-                              fold_1
-                                  ? Icon(
-                                      Icons.keyboard_arrow_right_sharp,
-                                      color: Colors.black,
-                                    )
-                                  : Icon(
-                                      Icons.keyboard_arrow_down_sharp,
-                                      color: Colors.black,
-                                    ),
-                              Text(
-                                '나의 조제 내역',
-                                style: TextStyle(color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                        Column(children: Prescription_List)
+                            onPressed: () {
+                              if (fold_1 == true) {
+                                setState(() {
+                                  fold_1 = false;
+                                });
+                              } else {
+                                setState(() {
+                                  fold_1 = true;
+                                });
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                fold_1
+                                    ? Icon(
+                                        Icons.keyboard_arrow_right_sharp,
+                                        color: Colors.black,
+                                      )
+                                    : Icon(
+                                        Icons.keyboard_arrow_down_sharp,
+                                        color: Colors.black,
+                                      ),
+                                Text(
+                                  '현재 복용 중',
+                                  style: TextStyle(color: Colors.black),
+                                )
+                              ],
+                            )),
+                        Row(
+                          children: Output_Medi_List,
+                        )
                       ],
                     ),
                   ),
-                ]))));
+                ])),
+                SizedBox(height: screenHeight * 0.015),
+                Container(
+                  margin: EdgeInsets.all(0),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(15)),
+                  width: screenWidth * 0.8,
+                  height: fold_2 ? screenHeight * 0.061 : min(100, 10000),
+                  child: Column(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          if (fold_2 == true) {
+                            setState(() {
+                              fold_2 = false;
+                            });
+                          } else {
+                            setState(() {
+                              fold_2 = true;
+                            });
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            fold_1
+                                ? Icon(
+                                    Icons.keyboard_arrow_right_sharp,
+                                    color: Colors.black,
+                                  )
+                                : Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: Colors.black,
+                                  ),
+                            Text(
+                              '나의 조제 내역',
+                              style: TextStyle(color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                      Column(children: Prescription_List)
+                    ],
+                  ),
+                ),
+              ]))),
+      bottomNavigationBar: Default_bottomAppBar(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/Directocr');
+        },
+        child: Icon(Icons.camera_alt_outlined,
+            color: Colors.white, size: screenWidth * 0.12),
+        backgroundColor: Color.fromRGBO(87, 132, 250, 1).withOpacity(0.75),
+      ),
+    );
   }
 }
 
