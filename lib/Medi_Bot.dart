@@ -16,7 +16,10 @@ class Medi_Bot extends StatefulWidget {
 }
 
 class _Medi_BotState extends State<Medi_Bot> {
+  double screenWidth = 1;
+  double screenHeight = 1;
   int? id;
+  TextEditingController control = TextEditingController();
   List<Widget> Medi_Bot_History = [];
 
   @override
@@ -29,8 +32,13 @@ class _Medi_BotState extends State<Medi_Bot> {
   Future<void> _loadUserinfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     int? loadid = user_info.getInt('id');
+    int loadscreenWidth = user_info.getInt('Width') ?? 0;
+    int loadscreenHeight = user_info.getInt('Height') ?? 0;
+
     setState(() {
       id = loadid;
+      screenWidth = loadscreenWidth.toDouble();
+      screenHeight = loadscreenHeight.toDouble();
     });
   }
 
@@ -55,20 +63,28 @@ class _Medi_BotState extends State<Medi_Bot> {
 
   void User_Input(String input) {
     Medi_Bot_History.add(Padding(
-      padding: EdgeInsets.only(right: 18),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15)),
-          color: Colors.white.withOpacity(0.9),
-        ),
-        child: Text(input),
+      padding: EdgeInsets.all(18),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            width: screenWidth * 0.75,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15)),
+              color: Colors.white.withOpacity(0.9),
+            ),
+            child: Text(input),
+          ),
+        ],
       ),
     ));
   }
 
+  void Medi_Bot_Return() {}
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -117,7 +133,9 @@ class _Medi_BotState extends State<Medi_Bot> {
                               width: screenWidth * 0.66,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  User_Input('약정보관련');
+                                  setState(() {
+                                    User_Input('약 정보 관련');
+                                  });
                                 },
                                 child: Text(
                                   '약 정보 관련',
@@ -140,7 +158,11 @@ class _Medi_BotState extends State<Medi_Bot> {
                             SizedBox(
                               width: screenWidth * 0.66,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    User_Input('처방전 관련');
+                                  });
+                                },
                                 child: Text(
                                   '처방전 관련',
                                   style: TextStyle(color: Colors.black),
@@ -162,7 +184,11 @@ class _Medi_BotState extends State<Medi_Bot> {
                             SizedBox(
                               width: screenWidth * 0.66,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    User_Input('증상 관련');
+                                  });
+                                },
                                 child: Text(
                                   '증상 관련',
                                   style: TextStyle(color: Colors.black),
@@ -184,7 +210,11 @@ class _Medi_BotState extends State<Medi_Bot> {
                             SizedBox(
                               width: screenWidth * 0.66,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    User_Input('어플 관련');
+                                  });
+                                },
                                 child: Text(
                                   '어플 관련',
                                   style: TextStyle(color: Colors.black),
@@ -224,78 +254,98 @@ class _Medi_BotState extends State<Medi_Bot> {
     }
 
     return Scaffold(
-      body: Container(
-        constraints:
-            BoxConstraints(minHeight: screenHeight, minWidth: screenWidth),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Column(
-          children: [
-            Container(
-              height: screenHeight * 0.9,
-              child: Column(
-                children: [
-                  Transform.translate(
-                    offset: Offset(screenWidth * 0.12, 0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Default_Logo(),
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            default_medi_bot(),
-                            Column(
-                              children: Medi_Bot_History,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ))
-                ],
-              ),
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            Container(
-              width: screenWidth * 0.8,
-              color: Colors.transparent,
-              child: TextField(
-                autofocus: false,
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 15, vertical: -7),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(30),
+          ),
+          child: Column(
+            children: [
+              Container(
+                height: screenHeight * 0.9,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Default_Logo(),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  size: 45,
+                                  color: Colors.white,
+                                )),
+                          )
+                        ],
                       ),
-                      borderSide: BorderSide(color: Colors.transparent)),
-                  filled: true, // TextField 내부를 채우려면 이 값을 true로 설정하세요.
-                  fillColor: Colors.white,
-                  hintText: '메디봇에게 메시지 보내기',
-                  hintStyle: TextStyle(
-                    fontSize: screenWidth * 0.033, // 힌트 텍스트의 글꼴 크기 설정
-                    color: Colors.grey, // 힌트 텍스트의 색상 설정
-                    fontWeight: FontWeight.w400, // 힌트 텍스트의 폰트 굵기 설정,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.send),
-                    iconSize: screenWidth * 0.06,
-                    onPressed: () {},
+                      SingleChildScrollView(
+                          child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                default_medi_bot(),
+                                Column(
+                                  children: Medi_Bot_History,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ))
+                    ],
                   ),
                 ),
               ),
-            )
-          ],
+              Container(
+                height: screenHeight * 0.1,
+                width: screenWidth * 0.8,
+                color: Colors.transparent,
+                child: TextField(
+                  controller: control,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 15, vertical: -7),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
+                        ),
+                        borderSide: BorderSide(color: Colors.transparent)),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: '메디봇에게 메시지 보내기',
+                    hintStyle: TextStyle(
+                      fontSize: screenWidth * 0.033, // 힌트 텍스트의 글꼴 크기 설정
+                      color: Colors.grey, // 힌트 텍스트의 색상 설정
+                      fontWeight: FontWeight.w400, // 힌트 텍스트의 폰트 굵기 설정,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.send),
+                      iconSize: screenWidth * 0.06,
+                      onPressed: () {
+                        setState(() {});
+                        if (control.text != null && control.text != '') {
+                          User_Input('${control.text}');
+                        }
+                        control.text = '';
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

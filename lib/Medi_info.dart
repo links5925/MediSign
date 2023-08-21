@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'Default_set/Default_BottomAppBar.dart';
-import 'Medicine_Detial.dart';
+import 'Medicine_Detail.dart';
 
 class Medi_info extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class Medi_info extends StatefulWidget {
 class _Medi_infoState extends State<Medi_info> {
   late List<dynamic> All_Medicine;
   bool fold_1 = false;
-  bool fold_2 = true;
+  bool fold_2 = false;
   List<Widget> Output_Medi_List = [];
   int? id;
   String? profile;
@@ -74,16 +74,20 @@ class _Medi_infoState extends State<Medi_info> {
         'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list/$id';
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      var user = jsonDecode(response.body);
+      var user = json.decode(utf8.decode(response.bodyBytes));
       for (var prescription in (user["prescription"])) {
-        prescriptions = jsonDecode(prescription.body); // 복용 횟수 얻음
+        setState(() {
+          prescriptions = jsonDecode(prescription.body); // 복용 횟수 얻음
+        });
 
         final medicine_list = prescriptions["medicine"]; // 복용 횟수 얻음
         final times = prescriptions["times"];
         for (var medicine in medicine_list) {
           for (var check_medicine in All_Medicine) {
             if (medicine == check_medicine["name"]) {
-              Output_Medi_List.add(Make_medicine(check_medicine, times));
+              setState(() {
+                Output_Medi_List.add(Make_medicine(check_medicine, times));
+              });
             }
           }
         }
@@ -199,15 +203,9 @@ class _Medi_infoState extends State<Medi_info> {
                 ),
               ),
               child: Column(children: [
+                Default_Logo(),
                 SizedBox(
                   height: screenHeight * 0.02,
-                ),
-                Transform.translate(
-                  offset: Offset(screenWidth * 0.12, 0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Default_Logo(),
-                  ),
                 ),
                 SingleChildScrollView(
                     child: Column(children: [
@@ -328,7 +326,6 @@ class _Prescription_imageState extends State<Prescription_image> {
   String hospital = '';
   String url = '';
   String date = '';
-
   @override
   void initState() {
     super.initState();
@@ -354,34 +351,56 @@ class _Prescription_imageState extends State<Prescription_image> {
     final screenHeight = mediaQuery.size.height;
 
     return Scaffold(
-      body: Container(
-        color: Colors.white.withOpacity(0.9),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-        width: screenWidth * 0.9,
-        child: Column(
-          children: [
-            Default_Logo(),
-            Row(
-              children: [
-                Icon(Icons.arrow_right_sharp),
-                Text(date),
-                Text(hospital)
-              ],
+        body: Column(
+      children: [
+        Container(
+          constraints: BoxConstraints(
+            minHeight: screenHeight,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            SizedBox(
-              height: 15,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: Image.network(
-                url,
-                width: screenWidth * 0.8,
-                fit: BoxFit.cover,
+          ),
+          child: Column(
+            children: [
+              Default_Logo(),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(10)),
+                width: screenWidth * 0.9,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.arrow_right_sharp, size: 40),
+                        Text(
+                          '$date $hospital',
+                          style: TextStyle(fontSize: 17),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Image.network(
+                        url,
+                        width: screenWidth * 0.8,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      ],
+    ));
   }
 }

@@ -13,8 +13,7 @@ class Default_Drawer extends StatefulWidget {
 
 class _Default_DrawerState extends State<Default_Drawer> {
   String? name;
-  String profile = '';
-  bool namecheck = false;
+  String? profile;
   int? id;
   @override
   void initState() {
@@ -24,12 +23,15 @@ class _Default_DrawerState extends State<Default_Drawer> {
 
   Future<void> _loadName() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
-    name = user_info.getString('name');
-    profile = user_info.getString('profile') ?? '';
-    id = user_info.getInt('id');
-    if (name != '') {
-      namecheck = true;
-    }
+    String? loadname = user_info.getString('name');
+    String? loadprofile = user_info.getString('profile');
+    int? loadid = user_info.getInt('id');
+
+    setState(() {
+      name = loadname;
+      profile = loadprofile;
+      id = loadid;
+    });
   }
 
   void _savelength(double width, double height) async {
@@ -81,7 +83,8 @@ class _Default_DrawerState extends State<Default_Drawer> {
                                         Color(0xff2036A7)),
                               ),
                               onPressed: () {
-                                Navigator.pushNamed(context, '/확인');
+                                Navigator.pushNamed(
+                                    context, '/User_Information');
                               },
                               child: Row(
                                 children: [
@@ -114,8 +117,9 @@ class _Default_DrawerState extends State<Default_Drawer> {
                                     MaterialStateProperty.all<Color>(
                                         Color(0xff2036A7)),
                               ),
-                              onPressed:
-                                  () {}, //Navigator.pushNamed(context, '/확인');,
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/Login');
+                              },
                               child: Row(
                                 children: [
                                   Text(
@@ -137,9 +141,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                       padding: EdgeInsets.only(top: screenHeight * 0.03),
                       child: ClipOval(
                         child: Image.network(
-                          namecheck
-                              ? profile
-                              : 'https://picsum.photos/200/200', // 이미지 URL
+                          profile ?? 'https://picsum.photos/200/200', // 이미지 URL
                           width: screenHeight * 0.12, // 원형 이미지의 가로
                           height: screenHeight * 0.12, // 원형 이미지의 세로 길이
                           fit: BoxFit.cover, // 이미지를 원형에 맞게 조정
@@ -149,15 +151,10 @@ class _Default_DrawerState extends State<Default_Drawer> {
                     SizedBox(
                       height: screenHeight * 0.01,
                     ),
-                    namecheck
-                        ? Text(
-                            '$name님, 반가워요!',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          )
-                        : Text(
-                            '익명님, 반가워요!',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
+                    Text(
+                      name ?? '$name님, 반가워요!',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                     SizedBox(height: screenHeight * 0.005),
                     Text(
                       '오늘도 건강한 하루 보내세요',
@@ -306,7 +303,9 @@ class _Default_DrawerState extends State<Default_Drawer> {
                     Padding(
                       padding: const EdgeInsets.all(3.0),
                       child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/test');
+                          },
                           child: Row(
                             children: [
                               Expanded(
@@ -325,7 +324,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                           )),
                     ),
                     Divider(
-                      height: 1,
+                      thickness: 1,
                       color: Colors.black.withOpacity(0.3),
                     ),
                     Padding(
@@ -350,7 +349,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                           )),
                     ),
                     Divider(
-                      height: 1,
+                      thickness: 1,
                       color: Colors.black.withOpacity(0.3),
                     ),
                     Padding(
@@ -375,32 +374,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                           )),
                     ),
                     Divider(
-                      height: 1,
-                      color: Colors.black.withOpacity(0.3),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: TextButton(
-                          onPressed: () {},
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child: Text(
-                                '즐겨찾기 약국 관리',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                              Icon(
-                                Icons.keyboard_arrow_right_sharp,
-                                color: Colors.black,
-                              )
-                            ],
-                          )),
-                    ),
-                    Divider(
-                      height: 1,
+                      thickness: 1,
                       color: Colors.black.withOpacity(0.3),
                     ),
                     Padding(
@@ -425,7 +399,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                           )),
                     ),
                     Divider(
-                      height: 1,
+                      thickness: 1,
                       color: Colors.black.withOpacity(0.3),
                     ),
                   ],

@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_medicine/Medi_info.dart';
-import 'package:flutter_medicine/Medi_map.dart';
+import 'package:flutter_medicine/Medi_Map.dart';
+// import 'package:flutter_medicine/blank.dart';
+import 'package:flutter_medicine/information.dart';
 import 'package:flutter_medicine/ocr.dart';
 import 'package:flutter_medicine/login_register/register.dart';
 import 'package:flutter_medicine/login_register/set_user_info.dart';
@@ -10,8 +12,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'HomePage.dart';
 import 'Medi_Bot.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'Medi_Calendar_Medicine.dart';
+import 'Medi_Map_Prescription.dart';
 import 'login_register/login.dart';
-import 'Directocr.dart';
+import 'Direct_Ocr.dart';
 import 'map.dart';
 import 'startscreen.dart';
 import 'All_alarm.dart';
@@ -53,10 +57,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: isLogin ? '/Login' : '/',
-      // initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),
-        // '/UserInfo': (context) => UserInfoPage(),
         '/Ocr': (context) => OCR(),
         '/Register': (context) => RegisterPgae(),
         '/user_set': (context) => Setuser(),
@@ -67,7 +69,12 @@ class _MyAppState extends State<MyApp> {
         '/Map': (context) => Map(),
         '/Medi_Bot': (context) => Medi_Bot(),
         '/All_Alarm': (context) => All_Alarm(),
-        '/Medi_Map': (context) => Medi_Map()
+        '/Medi_Map': (context) => Medi_Map(),
+        '/Medi_Map_Detail': (context) => Medi_Map_Detail(),
+        '/Medi_Map_Prescription': (context) => Medi_Map_Prescription(),
+        '/User_Information': (context) => Information(),
+        // '/test': (context) => test(),
+        '/Medi_Calendar_Medicine': (context) => Medi_Calendar_Medicine()
       },
     );
   }

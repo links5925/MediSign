@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, prefer_typing_uninitialized_variables, non_constant_identifier_names, unnecessary_null_in_if_null_operators
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -13,14 +11,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _EmailController = TextEditingController();
+  TextEditingController _PasswordController = TextEditingController();
   late String email;
   late String password;
   var User;
   void checkData() async {
-    email = _emailController.text;
-    password = _passwordController.text;
+    email = _EmailController.text;
+    password = _PasswordController.text;
 
     const String url =
         'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list';
@@ -81,51 +79,139 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text('로그인'),
-            centerTitle: true,
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          width: screenWidth,
+          height: screenHeight,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-          body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: '이메일'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: '비밀번호'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_emailController.text.isEmpty ||
-                    _passwordController.text.isEmpty) {
-                  showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            title: Text('알림'),
-                            content: Text('공란이 있습니다.'),
-                            actions: [
-                              TextButton(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: screenHeight * 0.6,
+                  width: screenWidth * 0.9,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Container(
+                    height: screenHeight * 0.5,
+                    child: Column(
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: screenHeight * 0.1,
+                            ),
+                            ClipOval(
+                              child: Image.network(
+                                'https://picsum.photos/200/200', // 이미지 URL
+                                width: screenHeight * 0.12, // 원형 이미지의 가로
+                                height: screenHeight * 0.12, // 원형 이미지의 세로 길이
+                                fit: BoxFit.cover, // 이미지를 원형에 맞게 조정
+                              ),
+                            ),
+                            Container(
+                                width: screenWidth * 0.77,
+                                child: TextField(
+                                  controller: _EmailController,
+                                  showCursor: false,
+                                  decoration: InputDecoration(hintText: '이메일'),
+                                )),
+                            Container(
+                                width: screenWidth * 0.77,
+                                child: TextField(
+                                  controller: _PasswordController,
+                                  showCursor: false,
+                                  decoration: InputDecoration(hintText: '비밀번호'),
+                                )),
+                          ],
+                        ),
+                        Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Container(
+                                height: 30,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: Color(0xff7885f8).withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: TextButton(
+                                  child: Text(
+                                    '회원가입',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    Navigator.pushNamed(context, '/Register');
                                   },
-                                  child: Text("확인"))
-                            ],
-                          ));
-                } else {
-                  checkData();
-                }
-              },
-              child: Text('로그인'),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.04,
+                ),
+                Container(
+                  height: screenHeight * 0.055,
+                  width: screenWidth * 0.35,
+                  decoration: BoxDecoration(
+                      color: Color(0xff7885f8).withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(15)),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.transparent),
+                        shadowColor:
+                            MaterialStateProperty.all(Colors.transparent)),
+                    child: Text(
+                      '로그인',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      if (_EmailController.text.isEmpty ||
+                          _PasswordController.text.isEmpty) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text('알림'),
+                                  content: Text('공란이 있습니다.'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("확인"))
+                                  ],
+                                ));
+                      } else {
+                        checkData();
+                      }
+                    },
+                  ),
+                )
+              ],
             ),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/Register');
-                },
-                child: Text('회원가입'))
-          ])),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,7 @@
 // ignore_for_file: sort_child_properties_last
 
+import 'dart:math';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'Default_set/Default_AppBar.dart';
@@ -25,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   var year = DateTime.now().year;
   var month = DateTime.now().month;
   bool fold = true;
-
+  List<Widget> disease_list = [];
   @override
   void initState() {
     super.initState();
@@ -40,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     String loadgender = user_info.getString('gender') ?? '';
     int? loadheight = user_info.getInt('height');
     int? loadweight = user_info.getInt('weight');
+    List<String> loaddisease = user_info.getStringList('disease') ?? [];
     setState(() {
       name = loadedName;
       birthdate = loadedBirthdate;
@@ -47,6 +50,24 @@ class _HomePageState extends State<HomePage> {
       gender = loadgender;
       height = loadheight;
       weight = loadweight;
+      setState(() {
+        for (var disease in loaddisease) {
+          disease_list.add(Row(
+            children: [
+              Icon(
+                Icons.circle,
+                color: Colors.black,
+                size: 10,
+              ),
+              SizedBox(width: 5),
+              Text(
+                disease,
+                style: TextStyle(color: Colors.black, fontSize: 17),
+              ),
+            ],
+          ));
+        }
+      });
     });
   }
 
@@ -98,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                                   borderSide: BorderSide(
                                       color: Color.fromRGBO(217, 217, 217, 1))),
                               filled:
-                                  true, // TextField 내부를 채우려면 이 값을 true로 설정하세요.
+                                  true,
                               fillColor: Color.fromRGBO(217, 217, 217, 1),
                               hintText: '궁금한 약에 대해서 검색해보세요:',
                               hintStyle: TextStyle(
@@ -126,8 +147,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Container(
                       child: Container(
-                        height:
-                            fold ? screenHeight * 0.18 : screenHeight * 0.248,
+                        height: screenHeight * 0.13,
                         alignment: Alignment.center,
                         width: screenWidth * 0.9,
                         decoration: BoxDecoration(
@@ -162,6 +182,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Row(
                                   children: [
+                                    SizedBox(height: screenHeight * 0.01),
                                     Text(name,
                                         style: TextStyle(
                                             fontStyle: FontStyle.normal,
@@ -179,16 +200,16 @@ class _HomePageState extends State<HomePage> {
                                     )
                                   ],
                                 ),
-                                SizedBox(
-                                  height: screenHeight * 0.005,
-                                ),
+                                SizedBox(height: screenHeight * 0.01),
                                 Text('오늘 약은 드셨나요??',
                                     style: TextStyle(
                                         fontSize: screenWidth * 0.03,
                                         fontWeight: FontWeight.w400)),
-                                SizedBox(
-                                  height: screenHeight * 0.005,
-                                ),
+                                Text('언제나 화이팅!',
+                                    style: TextStyle(
+                                        fontSize: screenWidth * 0.03,
+                                        fontWeight: FontWeight.w400)),
+                                SizedBox(height: screenHeight * 0.01),
                                 Text(
                                     '$gender / $height'
                                     'CM / $weight'
@@ -200,55 +221,6 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Row(
                                   children: [
-                                    Column(
-                                      children: [
-                                        Text(
-                                          '나의 지병',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: screenWidth * 0.035),
-                                        ),
-                                        Transform.translate(
-                                          offset: Offset(-screenWidth * 0.01,
-                                              screenHeight * 0.005),
-                                          child: TextButton(
-                                              onPressed: () {
-                                                if (fold == true) {
-                                                  setState(() {
-                                                    fold = false;
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    fold = true;
-                                                  });
-                                                }
-                                              },
-                                              child: fold
-                                                  ? Text(
-                                                      '자세히 보기',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize:
-                                                              screenWidth *
-                                                                  0.024,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline),
-                                                    )
-                                                  : Text(
-                                                      '자세히 보기 닫기',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize:
-                                                              screenWidth *
-                                                                  0.024,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline),
-                                                    )),
-                                        )
-                                      ],
-                                    ),
                                     SizedBox(
                                       width: screenWidth * 0.14,
                                     ),
@@ -260,10 +232,74 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: screenHeight * 0.01,
-                    ),
+                    SizedBox(height: screenHeight * 0.01),
                     Container(
+                      height: min(screenHeight * 0.1, screenHeight * 0.3),
+                      width: screenWidth * 0.9,
+                      decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(1),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, top: 10),
+                            child: Icon(Icons.medical_services_outlined),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 10, top: 10),
+                                child: Text(
+                                  '나의 지병',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: screenWidth * 0.035,
+                                  ),
+                                ),
+                              ),
+                              fold
+                                  ? Column()
+                                  : Column(
+                                      children: disease_list,
+                                    ),
+                              TextButton(
+                                  onPressed: () {
+                                    if (fold == true) {
+                                      setState(() {
+                                        fold = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        fold = true;
+                                      });
+                                    }
+                                  },
+                                  child: fold
+                                      ? Text('자세히 보기',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: screenWidth * 0.024,
+                                              decoration:
+                                                  TextDecoration.underline))
+                                      : Text('자세히 보기 닫기',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: screenWidth * 0.024,
+                                              decoration:
+                                                  TextDecoration.underline)))
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+                    Container(
+                        height: screenHeight * 0.55,
                         width: screenWidth * 0.9,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
@@ -276,62 +312,43 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.only(top: 8, left: 8),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.calendar_today_outlined,
-                                    size: screenWidth * 0.1,
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.01,
-                                  ),
-                                  Text(
-                                    '메디캘린더',
-                                    style: TextStyle(
-                                        fontSize: screenWidth * 0.044),
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.025,
-                                  ),
+                                  Icon(Icons.calendar_today_outlined,
+                                      size: screenWidth * 0.1),
+                                  SizedBox(width: screenWidth * 0.01),
+                                  Text('메디캘린더',
+                                      style: TextStyle(
+                                          fontSize: screenWidth * 0.044)),
+                                  SizedBox(width: screenWidth * 0.025),
                                   Container(
-                                    width: screenWidth * 0.49,
-                                    height: screenHeight * 0.03,
-                                    child: ElevatedButton(
-                                      onPressed: () {}, // 갤러리에서 이미지 선택하는 함수 호출
-                                      child: Transform.translate(
-                                        offset: Offset(-7, 0),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.mode_edit_outlined,
-                                              color: Colors.black,
-                                              size: 18,
-                                            ),
-                                            Transform.translate(
-                                              offset: Offset(6, 0),
-                                              child: Text(
-                                                '나의 메디캘린더 수정하기',
+                                      width: screenWidth * 0.49,
+                                      height: screenHeight * 0.03,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(context,
+                                                '/Medi_Calendar_Medicine');
+                                          },
+                                          child: Row(children: [
+                                            Icon(Icons.mode_edit_outlined,
+                                                color: Colors.black, size: 18),
+                                            SizedBox(width: 10),
+                                            Text('나의 메디캘린더 수정하기',
                                                 style: TextStyle(
                                                     color: Colors.black,
-                                                    fontSize: 9),
+                                                    fontSize: 12))
+                                          ]),
+                                          style: ButtonStyle(
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(
-                                                    217, 217, 217, 1)),
-                                      ),
-                                    ),
-                                  )
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                          Color>(
+                                                      Color.fromRGBO(
+                                                          217, 217, 217, 1)))))
                                 ],
                               ),
                             ),
