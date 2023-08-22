@@ -96,7 +96,8 @@ class _RegisterPgaeState extends State<RegisterPgae> {
       "weight": w,
       "height": h,
       "blood_type": "$bloody",
-      "username": "$name"
+      "username": "$name",
+      "disease": Disease_List
     };
     var body = jsonEncode(data);
     var response = await http.post(Uri.parse(url),
@@ -238,6 +239,7 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                             child: TextField(
                               controller: _PasswordController,
                               autofocus: true,
+                              textDirection: TextDirection.rtl,
                               decoration: InputDecoration(
                                 isDense: true,
                                 border: InputBorder.none,
@@ -258,7 +260,6 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                             child: Stack(
                               children: [
                                 TextField(
-                                  controller: _PasswordController,
                                   readOnly: true,
                                   decoration: InputDecoration(
                                     isDense: true,
@@ -438,7 +439,6 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                                 Column(
                                   children: [
                                     TextField(
-                                      controller: _PasswordController,
                                       readOnly: true,
                                       decoration: InputDecoration(
                                         isDense: true,
@@ -481,7 +481,6 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                             child: Stack(
                               children: [
                                 TextField(
-                                  controller: _PasswordController,
                                   readOnly: true,
                                   decoration: InputDecoration(
                                     isDense: true,
@@ -616,110 +615,120 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text('당뇨'),
-                                        Container(
-                                          width: 20,
-                                          height: 20,
-                                          child: ElevatedButton(
-                                              style: ButtonStyle(
-                                                backgroundColor: disease_1
-                                                    ? MaterialStateProperty.all(
-                                                        Colors.blue[800])
-                                                    : MaterialStateProperty.all(
-                                                        Colors.transparent),
-                                                shadowColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.transparent),
-                                                shape:
-                                                    MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            90),
-                                                    side: BorderSide(
-                                                        color: Colors.black),
+                                    Container(
+                                      padding: EdgeInsets.only(right: 30),
+                                      child: Row(
+                                        children: [
+                                          Text('당뇨'),
+                                          Spacer(),
+                                          Container(
+                                            width: 20,
+                                            height: 20,
+                                            child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: disease_1
+                                                      ? MaterialStateProperty
+                                                          .all(Colors.blue[800])
+                                                      : MaterialStateProperty
+                                                          .all(Colors
+                                                              .transparent),
+                                                  shadowColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.transparent),
+                                                  shape:
+                                                      MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              90),
+                                                      side: BorderSide(
+                                                          color: Colors.black),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              onPressed: () {
-                                                if (disease_1 == true) {
-                                                  setState(() {
-                                                    disease_1 = false;
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    disease_1 = true;
-                                                  });
-                                                }
-                                              },
-                                              child: disease_1
-                                                  ? Transform.translate(
-                                                      offset: Offset(-13, 0),
-                                                      child: Icon(
-                                                        Icons.check,
-                                                        size: 18,
-                                                      ),
-                                                    )
-                                                  : Container(
-                                                      width: 1, height: 1)),
-                                        )
-                                      ],
+                                                onPressed: () {
+                                                  if (disease_1 == true) {
+                                                    setState(() {
+                                                      disease_1 = false;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      disease_1 = true;
+                                                    });
+                                                  }
+                                                },
+                                                child: disease_1
+                                                    ? Transform.translate(
+                                                        offset: Offset(-13, 0),
+                                                        child: Icon(
+                                                          Icons.check,
+                                                          size: 18,
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        width: 1, height: 1)),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(height: screenHeight * 0.01),
-                                    Row(
-                                      children: [
-                                        Text('뇌졸증'),
-                                        Container(
-                                          width: 20,
-                                          height: 20,
-                                          child: ElevatedButton(
-                                              style: ButtonStyle(
-                                                backgroundColor: disease_2
-                                                    ? MaterialStateProperty.all(
-                                                        Colors.blue[800])
-                                                    : MaterialStateProperty.all(
-                                                        Colors.transparent),
-                                                shadowColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.transparent),
-                                                shape:
-                                                    MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            90),
-                                                    side: BorderSide(
-                                                        color: Colors.black),
+                                    Container(
+                                      padding: EdgeInsets.only(right: 30),
+                                      child: Row(
+                                        children: [
+                                          Text('뇌졸증'),
+                                          Spacer(),
+                                          Container(
+                                            width: 20,
+                                            height: 20,
+                                            child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: disease_2
+                                                      ? MaterialStateProperty
+                                                          .all(Colors.blue[800])
+                                                      : MaterialStateProperty
+                                                          .all(Colors
+                                                              .transparent),
+                                                  shadowColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.transparent),
+                                                  shape:
+                                                      MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              90),
+                                                      side: BorderSide(
+                                                          color: Colors.black),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              onPressed: () {
-                                                if (disease_2 == true) {
-                                                  setState(() {
-                                                    disease_2 = false;
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    disease_2 = true;
-                                                  });
-                                                }
-                                              },
-                                              child: disease_2
-                                                  ? Transform.translate(
-                                                      offset: Offset(-13, 0),
-                                                      child: Icon(
-                                                        Icons.check,
-                                                        size: 18,
-                                                      ),
-                                                    )
-                                                  : Container(
-                                                      width: 1, height: 1)),
-                                        )
-                                      ],
+                                                onPressed: () {
+                                                  if (disease_2 == true) {
+                                                    setState(() {
+                                                      disease_2 = false;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      disease_2 = true;
+                                                    });
+                                                  }
+                                                },
+                                                child: disease_2
+                                                    ? Transform.translate(
+                                                        offset: Offset(-13, 0),
+                                                        child: Icon(
+                                                          Icons.check,
+                                                          size: 18,
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        width: 1, height: 1)),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(height: screenHeight * 0.01),
                                     Row(

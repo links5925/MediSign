@@ -1,14 +1,13 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
+import 'dart:ui';
 import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'Default_set/Default_BottomAppBar.dart';
 import 'Default_set/Default_Logo.dart';
 import 'Medi_info.dart';
@@ -27,6 +26,8 @@ class _Medi_MapState extends State<Medi_Map> {
   late List Reg_List = [];
   List<Widget> Fav_List = [];
   List<Widget> Near_List = [];
+  List<dynamic> B_Fav_List = [];
+  List<dynamic> B_Near_List = [];
   double screenWidth = 1;
   double screenHeight = 1;
   int? lat;
@@ -39,12 +40,14 @@ class _Medi_MapState extends State<Medi_Map> {
     super.initState();
     _loadUserinfo().then((value) {
       _webViewController = WebViewController()
-        ..loadRequest(Uri.parse(
-            'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/show_near/?user_id=$id&lat=37.4507&lon=126.6543'))
+        ..loadRequest(Uri.parse(id == null
+            ? 'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/show_near/?user_id=$id&lat=37.4507&lon=126.6543'
+            : 'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/show_near/?user_id=3&lat=37.4507&lon=126.6543'))
         ..setJavaScriptMode(JavaScriptMode.unrestricted);
+      Get_Reg_List().then((value) {
+        Get_Near_List();
+      });
     });
-    Get_Reg_List();
-    Get_Near_List();
   }
 
   Future<void> _loadUserinfo() async {
@@ -78,22 +81,22 @@ class _Medi_MapState extends State<Medi_Map> {
       var responseData = json.decode(utf8.decode(response.bodyBytes));
       for (var pharmacy in responseData) {
         setState(() {
-          Reg_List.add(pharmacy);
-          Fav_List.add(Make_Pharmacy_List_View(pharmacy, true));
+          B_Fav_List.add(pharmacy);
+          Fav_List.add(Make_Pharmacy_List_View(pharmacy));
         });
       }
-    }
+    } else {}
   }
 
-  void Get_Near_List() async {
+  Future<void> Get_Near_List() async {
     final response = await http.get(Uri.parse(
         'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/nearby?lat=37.4495&lon=126.6536&distance_km=1'));
-
     if (response.statusCode == 200) {
       var responseData = json.decode(utf8.decode(response.bodyBytes));
       for (var pharmacy in responseData) {
         setState(() {
-          Near_List.add(Make_Pharmacy_List_View(pharmacy, false));
+          B_Near_List.add(pharmacy);
+          Near_List.add(Make_Pharmacy_List_View(pharmacy));
         });
       }
     }
@@ -109,7 +112,7 @@ class _Medi_MapState extends State<Medi_Map> {
     }
   }
 
-  Make_Pharmacy_List_View(var pharmacy, bool fav) {
+  Make_Pharmacy_List_View(var pharmacy) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
@@ -120,10 +123,8 @@ class _Medi_MapState extends State<Medi_Map> {
         child: ElevatedButton(
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
               elevation: MaterialStateProperty.all<double>(1),
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),
           child: Row(
@@ -131,24 +132,17 @@ class _Medi_MapState extends State<Medi_Map> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.keyboard_arrow_right_sharp,
-                        color: Colors.black,
-                        size: 22,
-                      ),
-                      Text(pharmacy["care_institution_name"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontFamily: 'NotoSnasKR',
-                              fontWeight: FontWeight.w700)),
-                    ],
-                  ),
+                  SizedBox(height: 10),
+                  Row(children: [
+                    Icon(Icons.keyboard_arrow_right_sharp,
+                        color: Colors.black, size: 22),
+                    Text(pharmacy["care_institution_name"],
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontFamily: 'NotoSnasKR',
+                            fontWeight: FontWeight.w700)),
+                  ]),
                   Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, left: 10),
@@ -168,10 +162,39 @@ class _Medi_MapState extends State<Medi_Map> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(top: screenHeight * 0.01),
-                    child: Icon(
-                      Icons.star,
-                      color: fav ? Colors.blue[300] : Colors.grey,
-                      size: screenHeight * 0.05,
+                    child: Stack(
+                      alignment: Alignment.centerLeft,
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: B_Fav_List.contains(pharmacy)
+                              ? Colors.blue[300]
+                              : Colors.grey,
+                          size: screenHeight * 0.05,
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              int state = -1;
+                              if (B_Fav_List.contains(pharmacy) == true) {
+                                setState(() {
+                                  Fav_List.remove(
+                                      Make_Pharmacy_List_View(pharmacy));
+                                  B_Fav_List.remove(pharmacy);
+                                });
+                              } else {
+                                B_Fav_List.add(pharmacy);
+                                Fav_List.add(Make_Pharmacy_List_View(pharmacy));
+                              }
+                              Fav_List;
+                              Near_List;
+                            },
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.transparent),
+                                shadowColor: MaterialStateProperty.all(
+                                    Colors.transparent)),
+                            child: Container())
+                      ],
                     ),
                   ),
                 ],
@@ -179,7 +202,8 @@ class _Medi_MapState extends State<Medi_Map> {
             ],
           ),
           onPressed: () {
-            _post_Medi_Map_Detail(fav, pharmacy["id"]);
+            _post_Medi_Map_Detail(
+                B_Fav_List.contains(pharmacy), pharmacy["id"]);
             Navigator.pushNamed(context, '/Medi_Map_Detail');
           },
         ),
@@ -486,7 +510,7 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
 
   Future<void> Get_Reg_List() async {
     final response = await http.get(Uri.parse(
-        'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/reg/1'));
+        'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/reg/$id'));
     if (response.statusCode == 200) {
       var responseData = json.decode(utf8.decode(response.bodyBytes));
       for (var pharmacy in responseData) {
@@ -600,27 +624,35 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
     }
   }
 
+  String setRange(String inputText, int maxLength) {
+    final stringBuffer = StringBuffer();
+    for (int i = 0; i < inputText.length; i += maxLength) {
+      final endIndex = (i + maxLength) > inputText.length
+          ? inputText.length
+          : (i + maxLength);
+      stringBuffer.write(inputText.substring(i, endIndex));
+      if (endIndex != inputText.length) stringBuffer.write("\n");
+    }
+    return stringBuffer.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        constraints: BoxConstraints(
-          minHeight: screenHeight,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Column(
-          children: [
-            Default_Logo(),
-            pharmacy_id != 0
-                ? Screen == 1
-                    ? Column(
-                        children: [
+        body: Container(
+            constraints: BoxConstraints(minHeight: screenHeight),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(children: [
+              Default_Logo(),
+              pharmacy_id != 0
+                  ? Screen == 1
+                      ? Column(children: [
                           Container(
                               height: screenHeight * 0.75,
                               width: screenWidth * 0.88,
@@ -628,311 +660,65 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
                                   color: Colors.white.withOpacity(0.85),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15))),
-                              child: Column(
-                                children: [
-                                  Container(
+                              child: Column(children: [
+                                Container(
                                     height: screenHeight * 0.65,
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(15.0),
-                                                child: Container(
-                                                  width: screenWidth * 0.5,
-                                                  child: OutlinedButton(
-                                                      style: ButtonStyle(
-                                                          shape: MaterialStateProperty
-                                                              .all<
-                                                                  RoundedRectangleBorder>(
-                                                        RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30),
-                                                        ),
-                                                      )),
-                                                      onPressed: () {},
-                                                      child: Fav
-                                                          ? Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Icon(Icons
-                                                                    .not_listed_location_outlined),
-                                                                Text(
-                                                                  '즐겨찾기 약국',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .black),
-                                                                )
-                                                              ],
-                                                            )
-                                                          : Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .location_on_sharp,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                                Text(
-                                                                  '내 주변 약국',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .black),
-                                                                )
-                                                              ],
-                                                            )),
-                                                ),
-                                              ),
-                                              Spacer(),
-                                              Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 20),
-                                                    child: Container(
-                                                      width: screenWidth * 0.12,
-                                                      height:
-                                                          screenHeight * 0.08,
-                                                      color: Colors.purple,
-                                                      child: Icon(Icons.star,
-                                                          size: 45,
-                                                          color: Fav
-                                                              ? Colors.blue[300]
-                                                              : Colors.grey),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ]),
-                                        Container(
-                                          width: screenWidth * 0.7,
-                                          height: screenHeight * 0.55,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      '$name',
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Icon(Icons.phone),
-                                                    Spacer(),
-                                                    Icon(
-                                                      Icons.star,
-                                                      color: fav
-                                                          ? Colors.blue[300]
-                                                          : Colors.grey,
-                                                      size: screenHeight * 0.05,
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      '전화',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14),
-                                                    ),
-                                                    SizedBox(
-                                                        width:
-                                                            screenWidth * 0.06),
-                                                    Text(
-                                                      '$phone_number',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      '주소',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14),
-                                                    ),
-                                                    SizedBox(
-                                                        width:
-                                                            screenWidth * 0.06),
-                                                    Text(
-                                                      limitString(
-                                                          cutting('$address')),
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              SingleChildScrollView(
-                                                child: webviewbuilder(),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Color(0xff7885F8)
-                                              .withOpacity(0.7),
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      height: screenHeight * 0.07,
-                                      width: screenWidth * 0.56,
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            shadowColor: MaterialStateProperty
-                                                .all<Color>(Colors.transparent),
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.transparent)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(90),
-                                                  color: Colors.white),
-                                            ),
-                                            SizedBox(width: screenWidth * 0.01),
-                                            Text(
-                                              '지난 처방전 보기',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.054,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        onPressed: () {
-                                          _prescription();
-                                          setState(() {
-                                            Screen = 2;
-                                          });
-                                          // Navigator.pushNamed(context,
-                                          //     '/Medi_Map_Prescription');
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ))
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          Container(
-                              height: screenHeight * 0.32,
-                              width: screenWidth * 0.88,
-                              decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.85),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
+                                    child: Column(children: [
                                       Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(15.0),
-                                              child: Container(
-                                                width: screenWidth * 0.5,
-                                                child: OutlinedButton(
-                                                    style: ButtonStyle(
-                                                        shape: MaterialStateProperty
-                                                            .all<
-                                                                RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30),
-                                                      ),
-                                                    )),
-                                                    onPressed: () {},
-                                                    child: Fav
-                                                        ? Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Icon(Icons
-                                                                  .not_listed_location_outlined),
-                                                              Text(
-                                                                '즐겨찾기 약국',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black),
-                                                              )
-                                                            ],
-                                                          )
-                                                        : Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .location_on_sharp,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                              Text(
-                                                                '내 주변 약국',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black),
-                                                              )
-                                                            ],
-                                                          )),
-                                              ),
-                                            ),
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Container(
+                                                    width: screenWidth * 0.5,
+                                                    child: OutlinedButton(
+                                                        style: ButtonStyle(
+                                                            shape: MaterialStateProperty.all<
+                                                                    RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(30),
+                                                        ))),
+                                                        onPressed: () {},
+                                                        child: Fav
+                                                            ? Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                    Icon(Icons
+                                                                        .not_listed_location_outlined),
+                                                                    Text(
+                                                                      '즐겨찾기 약국',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.black),
+                                                                    )
+                                                                  ])
+                                                            : Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .location_on_sharp,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                    Text(
+                                                                      '내 주변 약국',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.black),
+                                                                    )
+                                                                  ])))),
                                             Spacer(),
-                                            Column(
-                                              children: [
-                                                Padding(
+                                            Column(children: [
+                                              Padding(
                                                   padding:
                                                       const EdgeInsets.only(
                                                           right: 20),
@@ -945,29 +731,27 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
                                                         color: Fav
                                                             ? Colors.blue[300]
                                                             : Colors.grey),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
+                                                  ))
+                                            ])
                                           ]),
                                       Container(
-                                        width: screenWidth * 0.7,
-                                        height: screenHeight * 0.2,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        child: Column(
-                                          children: [
+                                          width: screenWidth * 0.7,
+                                          height: screenHeight * 0.55,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          child: Column(children: [
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
-                                                  Text('$name',
-                                                      style: TextStyle(
-                                                          fontSize: 16)),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(children: [
+                                                  Text(
+                                                    '$name',
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  ),
                                                   Icon(Icons.phone),
                                                   Spacer(),
                                                   Icon(
@@ -977,14 +761,11 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
                                                         : Colors.grey,
                                                     size: screenHeight * 0.05,
                                                   )
-                                                ],
-                                              ),
-                                            ),
+                                                ])),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(children: [
                                                   Text(
                                                     '전화',
                                                     style: TextStyle(
@@ -995,21 +776,16 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
                                                   SizedBox(
                                                       width:
                                                           screenWidth * 0.06),
-                                                  Text(
-                                                    '$phone_number',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+                                                  Text('$phone_number',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                      ))
+                                                ])),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(children: [
                                                   Text(
                                                     '주소',
                                                     style: TextStyle(
@@ -1020,23 +796,233 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
                                                   SizedBox(
                                                       width:
                                                           screenWidth * 0.06),
-                                                  Text(
-                                                    cutting('$address'),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                                  Text(setRange('$address', 16),
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                      ))
+                                                ])),
+                                            SingleChildScrollView(
+                                              child: webviewbuilder(),
+                                            )
+                                          ]))
+                                    ])),
+                                Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff7885F8)
+                                                .withOpacity(0.7),
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        height: screenHeight * 0.07,
+                                        width: screenWidth * 0.56,
+                                        child: ElevatedButton(
+                                            style: ButtonStyle(
+                                                shadowColor:
+                                                    MaterialStateProperty.all<Color>(
+                                                        Colors.transparent),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                            Color>(
+                                                        Colors.transparent)),
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(90),
+                                                        color: Colors.white),
+                                                  ),
+                                                  SizedBox(
+                                                      width:
+                                                          screenWidth * 0.01),
+                                                  Text('지난 처방전 보기',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize:
+                                                            screenWidth * 0.054,
+                                                      ))
+                                                ]),
+                                            onPressed: () {
+                                              _prescription();
+                                              setState(() {
+                                                Screen = 2;
+                                              });
+                                              // Navigator.pushNamed(context,
+                                              //     '/Medi_Map_Prescription');
+                                            })))
+                              ]))
+                        ])
+                      : Column(children: [
+                          Container(
+                              height: screenHeight * 0.32,
+                              width: screenWidth * 0.88,
+                              decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.85),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Column(children: [
+                                Column(children: [
+                                  Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Container(
+                                                width: screenWidth * 0.5,
+                                                child: OutlinedButton(
+                                                    style: ButtonStyle(
+                                                        shape: MaterialStateProperty.all<
+                                                                RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
+                                                    ))),
+                                                    onPressed: () {},
+                                                    child: Fav
+                                                        ? Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                                Icon(Icons
+                                                                    .not_listed_location_outlined),
+                                                                Text(
+                                                                  '즐겨찾기 약국',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                )
+                                                              ])
+                                                        : Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .location_on_sharp,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                                Text(
+                                                                  '내 주변 약국',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                )
+                                                              ])))),
+                                        Spacer(),
+                                        Column(children: [
+                                          Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 20),
+                                              child: Container(
+                                                width: screenWidth * 0.12,
+                                                height: screenHeight * 0.08,
+                                                color: Colors.purple,
+                                                child: Icon(Icons.star,
+                                                    size: 45,
+                                                    color: Fav
+                                                        ? Colors.blue[300]
+                                                        : Colors.grey),
+                                              ))
+                                        ])
+                                      ]),
+                                  Container(
+                                      width: screenWidth * 0.7,
+                                      height: screenHeight * 0.2,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              )),
+                                      child: Column(children: [
+                                        Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(children: [
+                                              Text('$name',
+                                                  style:
+                                                      TextStyle(fontSize: 16)),
+                                              Icon(Icons.phone),
+                                              Spacer(),
+                                              Container(
+                                                child: Stack(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.star,
+                                                      color: fav
+                                                          ? Colors.blue[300]
+                                                          : Colors.grey,
+                                                      size: screenHeight * 0.05,
+                                                    ),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          if (fav == true) {
+                                                            setState(() {
+                                                              fav = false;
+                                                            });
+                                                          } else {
+                                                            setState(() {
+                                                              fav = true;
+                                                            });
+                                                          }
+                                                        },
+                                                        style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(Colors
+                                                                      .transparent),
+                                                        ),
+                                                        child: Container())
+                                                  ],
+                                                ),
+                                              )
+                                            ])),
+                                        Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(children: [
+                                              Text(
+                                                '전화',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14),
+                                              ),
+                                              SizedBox(
+                                                  width: screenWidth * 0.06),
+                                              Text('$phone_number',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                  ))
+                                            ])),
+                                        Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(children: [
+                                              Text(
+                                                '주소',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14),
+                                              ),
+                                              SizedBox(
+                                                  width: screenWidth * 0.06),
+                                              Text(setRange('$address', 16),
+                                                  maxLines: 2,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                  ))
+                                            ]))
+                                      ]))
+                                ])
+                              ])),
                           SizedBox(height: screenHeight * 0.01),
                           Container(
                               height: screenHeight * 0.45,
@@ -1046,71 +1032,58 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15))),
                               child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Container(
+                                  child: Column(children: [
+                                Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Container(
                                               width: screenWidth * 0.5,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(Icons
-                                                      .not_listed_location_outlined),
-                                                  Text(
-                                                    '지난 처방전 보기',
-                                                    style: TextStyle(
-                                                        color: Colors.black),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                    Container(
-                                      width: screenWidth * 0.7,
-                                      height: screenHeight * 10,
-                                      child: SingleChildScrollView(
-                                          child: Column(
-                                        children: [
-                                          Column(
-                                            children: Prescription_List,
-                                          ),
-                                        ],
-                                      )),
-                                    ),
-                                  ],
-                                ),
-                              ))
-                        ],
-                      )
-                : Container(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Default_bottomAppBar(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/Directocr');
-        },
-        child: Icon(Icons.camera_alt_outlined,
-            color: Colors.white, size: screenWidth * 0.12),
-        backgroundColor: Color.fromRGBO(87, 132, 250, 1).withOpacity(0.75),
-      ),
-    );
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons
+                                                        .not_listed_location_outlined),
+                                                    Text(
+                                                      '지난 처방전 보기',
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    )
+                                                  ])))
+                                    ]),
+                                Container(
+                                    width: screenWidth * 0.7,
+                                    height: screenHeight * 10,
+                                    child: SingleChildScrollView(
+                                        child: Column(children: [
+                                      Column(
+                                        children: Prescription_List,
+                                      )
+                                    ])))
+                              ])))
+                        ])
+                  : Container(),
+            ])),
+        bottomNavigationBar: Default_bottomAppBar(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/Directocr');
+            },
+            child: Icon(Icons.camera_alt_outlined,
+                color: Colors.white, size: screenWidth * 0.12),
+            backgroundColor:
+                Color.fromRGBO(87, 132, 250, 1).withOpacity(0.75)));
   }
 
   Widget webviewbuilder() {
     return _webViewController != null
         ? Container(
             width: screenWidth * 0.8,
-            height: screenHeight * 0.39,
+            height: screenHeight * 0.37,
             child: WebViewWidget(controller: _webViewController!),
           )
         : Container(

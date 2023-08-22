@@ -304,7 +304,7 @@ class _Default_DrawerState extends State<Default_Drawer> {
                       padding: const EdgeInsets.all(3.0),
                       child: TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/test');
+                            Navigator.pushNamed(context, '/set');
                           },
                           child: Row(
                             children: [

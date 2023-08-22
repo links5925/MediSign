@@ -71,17 +71,16 @@ class _Medi_infoState extends State<Medi_info> {
 
   void Medi_Set() async {
     String url =
-        'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list/$id';
+        'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list/1';
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var user = json.decode(utf8.decode(response.bodyBytes));
-      for (var prescription in (user["prescription"])) {
+      for (var prescription in (user["prescriptions"])) {
         setState(() {
-          prescriptions = jsonDecode(prescription.body); // 복용 횟수 얻음
+          prescriptions = jsonDecode(prescription.body);
         });
-
-        final medicine_list = prescriptions["medicine"]; // 복용 횟수 얻음
-        final times = prescriptions["times"];
+        final medicine_list = prescriptions["medicine"];
+        final times = prescriptions["dosage_times"];
         for (var medicine in medicine_list) {
           for (var check_medicine in All_Medicine) {
             if (medicine == check_medicine["name"]) {

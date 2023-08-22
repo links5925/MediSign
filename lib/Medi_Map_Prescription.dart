@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import 'Default_set/Default_BottomAppBar.dart';
 import 'Default_set/Default_Logo.dart';
 import 'Medi_info.dart';
@@ -69,7 +68,7 @@ class Medi_Map_PrescriptionState extends State<Medi_Map_Prescription> {
 
   Future<void> Get_Reg_List() async {
     final response = await http.get(Uri.parse(
-        'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/reg/1'));
+        'https://medisign-hackthon-95c791df694a.herokuapp.com/pharmacies/reg/$id'));
     if (response.statusCode == 200) {
       var responseData = json.decode(utf8.decode(response.bodyBytes));
       for (var pharmacy in responseData) {
@@ -159,6 +158,18 @@ class Medi_Map_PrescriptionState extends State<Medi_Map_Prescription> {
         }
       }
     }
+  }
+
+  String setRange(String inputText, int maxLength) {
+    final stringBuffer = StringBuffer();
+    for (int i = 0; i < inputText.length; i += maxLength) {
+      final endIndex = (i + maxLength) > inputText.length
+          ? inputText.length
+          : (i + maxLength);
+      stringBuffer.write(inputText.substring(i, endIndex));
+      if (endIndex != inputText.length) stringBuffer.write("\n");
+    }
+    return stringBuffer.toString();
   }
 
   @override
@@ -315,11 +326,16 @@ class Medi_Map_PrescriptionState extends State<Medi_Map_Prescription> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14),
                                         ),
-                                        SizedBox(width: screenWidth * 0.06),
-                                        Text(
-                                          cutting('$address'),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w300,
+                                        SizedBox(
+                                          width: screenWidth * 0.06,
+                                        ),
+                                        Container(
+                                          child: Text(
+                                            cutting('$address'),
+                                            maxLines: 3,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                            ),
                                           ),
                                         )
                                       ],

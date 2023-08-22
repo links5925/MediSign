@@ -8,6 +8,7 @@ import 'package:flutter_medicine/information.dart';
 import 'package:flutter_medicine/ocr.dart';
 import 'package:flutter_medicine/login_register/register.dart';
 import 'package:flutter_medicine/login_register/set_user_info.dart';
+import 'package:flutter_medicine/set.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HomePage.dart';
 import 'Medi_Bot.dart';
@@ -74,8 +75,9 @@ class _MyAppState extends State<MyApp> {
         '/Medi_Map_Prescription': (context) => Medi_Map_Prescription(),
         '/User_Information': (context) => Information(),
         // '/test': (context) => test(),
-        '/Medi_Calendar_Medicine': (context) => Medi_Calendar_Medicine()
-      },
+        '/Medi_Calendar_Medicine': (context) => Medi_Calendar_Medicine(),
+        '/set': (context) => Medi_Set()
+      },  
     );
   }
 }

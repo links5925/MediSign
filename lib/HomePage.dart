@@ -57,12 +57,15 @@ class _HomePageState extends State<HomePage> {
               Icon(
                 Icons.circle,
                 color: Colors.black,
-                size: 10,
+                size: 8,
               ),
               SizedBox(width: 5),
-              Text(
-                disease,
-                style: TextStyle(color: Colors.black, fontSize: 17),
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text(
+                  disease,
+                  style: TextStyle(color: Colors.black, fontSize: 13),
+                ),
               ),
             ],
           ));
@@ -118,8 +121,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   borderSide: BorderSide(
                                       color: Color.fromRGBO(217, 217, 217, 1))),
-                              filled:
-                                  true,
+                              filled: true,
                               fillColor: Color.fromRGBO(217, 217, 217, 1),
                               hintText: '궁금한 약에 대해서 검색해보세요:',
                               hintStyle: TextStyle(
@@ -234,7 +236,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Container(
-                      height: min(screenHeight * 0.1, screenHeight * 0.3),
+                      constraints:
+                          BoxConstraints(minHeight: screenHeight * 0.1),
                       width: screenWidth * 0.9,
                       decoration: BoxDecoration(
                           color: Colors.white.withOpacity(1),
@@ -253,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 10, top: 10),
+                                    const EdgeInsets.only(left: 5, top: 15),
                                 child: Text(
                                   '나의 지병',
                                   style: TextStyle(
@@ -265,7 +268,12 @@ class _HomePageState extends State<HomePage> {
                               fold
                                   ? Column()
                                   : Column(
-                                      children: disease_list,
+                                      children: [
+                                        SizedBox(height: 10),
+                                        Column(
+                                          children: disease_list,
+                                        ),
+                                      ],
                                     ),
                               TextButton(
                                   onPressed: () {

@@ -25,42 +25,83 @@ class _Default_bottomAppBarState extends State<Default_bottomAppBar> {
     final screenHeight = mediaQuery.size.height;
 
     return BottomAppBar(
-      elevation: 0,
+      elevation: 10,
       color: Colors.white.withOpacity(0.55),
       shape: CircularNotchedRectangle(),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          IconButton(
-            icon: Icon(
-              Icons.home,
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/');
-            },
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Column(
+                  children: [
+                    Icon(
+                      Icons.home,
+                    ),
+                    Text('MEDI.HOME',
+                        style: TextStyle(fontSize: 5, color: Colors.blue))
+                  ],
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/');
+                },
+              ),
+              IconButton(
+                icon: Column(
+                  children: [
+                    Icon(Icons.medical_services_outlined),
+                    Text(
+                      'MEDI.INFO',
+                      style: TextStyle(fontSize: 5, color: Colors.blue),
+                    )
+                  ],
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Medi_Info');
+                },
+              ),
+              SizedBox(),
+              IconButton(
+                icon: Column(
+                  children: [
+                    Icon(Icons.person),
+                    Text(
+                      'MEDI.BOT',
+                      style: TextStyle(color: Colors.blue, fontSize: 6),
+                    )
+                  ],
+                ),
+                onPressed: () {
+                  _savelength(screenWidth, screenHeight);
+                  Navigator.pushNamed(
+                    context,
+                    '/Medi_Bot',
+                  );
+                },
+              ),
+              IconButton(
+                icon: Column(
+                  children: [
+                    Icon(Icons.location_on_outlined),
+                    Text('MEDI.MAP',
+                        style: TextStyle(fontSize: 6, color: Colors.blue))
+                  ],
+                ),
+                onPressed: () {
+                  _savelength(screenWidth, screenHeight);
+                  Navigator.pushNamed(context, '/Medi_Map');
+                },
+              ),
+            ],
           ),
-          IconButton(
-            icon: Icon(Icons.medical_services_outlined),
-            onPressed: () {
-              Navigator.pushNamed(context, '/Medi_Info');
-            },
-          ),
-          SizedBox(),
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              _savelength(screenWidth, screenHeight);
-              Navigator.pushNamed(context, '/Medi_Bot');
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.location_on_outlined),
-            onPressed: () {
-              _savelength(screenWidth, screenHeight);
-              Navigator.pushNamed(context, '/Medi_Map');
-            },
-          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Text('MEDI.LENZ',
+                style: TextStyle(fontSize: 8, color: Colors.blue)),
+          )
         ],
       ),
     );

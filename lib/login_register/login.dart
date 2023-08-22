@@ -75,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
     user_info.setInt('height', User['height']);
     user_info.setInt('weight', User['weight']);
     user_info.setInt('id', User['id']);
+    user_info.setStringList('disease', User['disease']);
   }
 
   @override

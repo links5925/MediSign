@@ -47,9 +47,7 @@ class _Medicine_detailState extends State<Medicine_detail> {
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery를 사용하여 기기 정보 가져오기
     final mediaQuery = MediaQuery.of(context);
-    // 기기의 너비와 높이 가져오기
     final screenWidth = mediaQuery.size.width;
 
     return Scaffold(
