@@ -139,14 +139,8 @@ class _Default_DrawerState extends State<Default_Drawer> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: screenHeight * 0.03),
-                      child: ClipOval(
-                        child: Image.network(
-                          profile ?? 'https://picsum.photos/200/200', // 이미지 URL
-                          width: screenHeight * 0.12, // 원형 이미지의 가로
-                          height: screenHeight * 0.12, // 원형 이미지의 세로 길이
-                          fit: BoxFit.cover, // 이미지를 원형에 맞게 조정
-                        ),
-                      ),
+                      child:
+                          Image(image: AssetImage('assets/image/graph 1.png')),
                     ),
                     SizedBox(
                       height: screenHeight * 0.01,

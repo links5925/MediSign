@@ -1,9 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
-
 import 'package:flutter/material.dart';
 import 'package:flutter_medicine/Medi_info.dart';
 import 'package:flutter_medicine/Medi_Map.dart';
-// import 'package:flutter_medicine/blank.dart';
 import 'package:flutter_medicine/information.dart';
 import 'package:flutter_medicine/ocr.dart';
 import 'package:flutter_medicine/login_register/register.dart';
@@ -15,6 +13,7 @@ import 'Medi_Bot.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'Medi_Calendar_Medicine.dart';
 import 'Medi_Map_Prescription.dart';
+import 'login_register/change_info.dart';
 import 'login_register/login.dart';
 import 'Direct_Ocr.dart';
 import 'map.dart';
@@ -74,10 +73,10 @@ class _MyAppState extends State<MyApp> {
         '/Medi_Map_Detail': (context) => Medi_Map_Detail(),
         '/Medi_Map_Prescription': (context) => Medi_Map_Prescription(),
         '/User_Information': (context) => Information(),
-        // '/test': (context) => test(),
         '/Medi_Calendar_Medicine': (context) => Medi_Calendar_Medicine(),
-        '/set': (context) => Medi_Set()
-      },  
+        //   '/set': (context) => Medi_Set(),
+        '/change_info': (context) => Change_Info_Page(),
+      },
     );
   }
 }

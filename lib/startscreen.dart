@@ -25,7 +25,6 @@ class _StartScreenState extends State<StartScreen> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 50),
             child: Text('시작화면'),
-            // child: Image.asset('assets/jhkim_velog_logo.png')
           ),
         ]),
       ),

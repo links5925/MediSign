@@ -21,7 +21,6 @@ class _Medi_infoState extends State<Medi_info> {
   bool fold_2 = false;
   List<Widget> Output_Medi_List = [];
   int? id;
-  String? profile;
   List<Widget> Prescription_List = [];
   late var prescriptions;
   @override
@@ -48,10 +47,8 @@ class _Medi_infoState extends State<Medi_info> {
   Future<void> _loadUserinfo() async {
     SharedPreferences user_info = await SharedPreferences.getInstance();
     int? loadid = user_info.getInt('id');
-    String? loadprofile = user_info.getString('profile');
     setState(() {
       id = loadid;
-      profile = loadprofile;
     });
   }
 
@@ -154,12 +151,14 @@ class _Medi_infoState extends State<Medi_info> {
                   padding: const EdgeInsets.only(top: 16),
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                    child: Image.network(
-                      profile ?? 'https://picsum.photos/200/200',
-                      height: 65,
-                      width: 65,
-                      fit: BoxFit.cover,
-                    ),
+                    child: medicine['image'] != null
+                        ? Image.network(
+                            medicine['image'],
+                            height: 65,
+                            width: 65,
+                            fit: BoxFit.cover,
+                          )
+                        : Image(image: AssetImage('assets/image/graph 1.png')),
                   ),
                 ),
                 Text(

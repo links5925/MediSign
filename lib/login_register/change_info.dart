@@ -9,12 +9,13 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterPgae extends StatefulWidget {
+class Change_Info_Page extends StatefulWidget {
   @override
-  _RegisterPgaeState createState() => _RegisterPgaeState();
+  _Change_Info_PageState createState() => _Change_Info_PageState();
 }
 
-class _RegisterPgaeState extends State<RegisterPgae> {
+class _Change_Info_PageState extends State<Change_Info_Page> {
+  late int id;
   TextEditingController _PasswordController = TextEditingController();
   TextEditingController _NameController = TextEditingController();
   TextEditingController _EmailController = TextEditingController();
@@ -38,6 +39,7 @@ class _RegisterPgaeState extends State<RegisterPgae> {
   @override
   void initState() {
     super.initState();
+    _loadUserInfo();
   }
 
   void Add_Deisease() {
@@ -75,19 +77,61 @@ class _RegisterPgaeState extends State<RegisterPgae> {
     user_info.setString('name', _NameController.text);
     user_info.setString('email', _EmailController.text);
     user_info.setString('password', _PasswordController.text);
-    user_info.setString('blood_type', blood_type);
+    user_info.setString('password', blood_type);
     user_info.setString('gender', _Is_Male ? '남자' : '여자');
     user_info.setInt('weight', int.parse(_WeightController.text));
     user_info.setInt('height', int.parse(_HeightController.text));
     user_info.setStringList('disease', Disease_List);
   }
 
+  void _loadUserInfo() async {
+    SharedPreferences user_info = await SharedPreferences.getInstance();
+    List de = user_info.getStringList('disease') ?? [];
+    setState(() {
+      id = user_info.getInt('id') ?? 0;
+      _NameController.text = user_info.getString('name') ?? '';
+      _EmailController.text = user_info.getString('email') ?? '';
+      _PasswordController.text = user_info.getString('password') ?? '';
+      blood_type = user_info.getString('bloodType') ?? 'A';
+      _Is_Male = user_info.getString('gender') == '남자' ? true : false;
+      _WeightController.text = '${user_info.getInt('weight')}';
+      _HeightController.text = '${user_info.getInt('height')}';
+      if (de.contains('당뇨')) {
+        disease_1 = true;
+      }
+      if (de.contains('뇌졸증')) {
+        disease_2 = true;
+      }
+      if (de.contains('암')) {
+        disease_3 = true;
+      }
+      if (de.contains('간염')) {
+        disease_4 = true;
+      }
+      if (de.contains('동맥경화')) {
+        disease_5 = true;
+      }
+      if (de.contains('폐질환')) {
+        disease_6 = true;
+      }
+      if (de.contains('치매')) {
+        disease_7 = true;
+      }
+      if (de.contains('심근경색')) {
+        disease_8 = true;
+      }
+      if (de.contains('천식')) {
+        disease_9 = true;
+      }
+    });
+  }
+
   void postData(String name, bool gender, String weight, String height,
       String bloody, String password, String email) async {
     int w = int.parse(weight);
     int h = int.parse(height);
-    const String url =
-        'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list';
+    String url =
+        'https://medisign-hackthon-95c791df694a.herokuapp.com/users/User_list/$id';
     Map<String, dynamic> data = {
       "name": "$name",
       "password": "$password",
@@ -100,7 +144,7 @@ class _RegisterPgaeState extends State<RegisterPgae> {
       "disease": Disease_List
     };
     var body = jsonEncode(data);
-    var response = await http.post(Uri.parse(url),
+    var response = await http.patch(Uri.parse(url),
         headers: {'Content-Type': 'application/json'}, body: body);
     if (response.statusCode == 201) {
       response = await http.get(Uri.parse(url));
@@ -175,7 +219,7 @@ class _RegisterPgaeState extends State<RegisterPgae> {
               height: screenHeight * 0.05,
             ),
             Text(
-              '회원가입',
+              '정보 수정',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
             SizedBox(
@@ -524,6 +568,7 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                         Container(
                           width: screenWidth * 0.77,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: Disease_Widget,
                           ),
                         ),
@@ -1205,27 +1250,27 @@ class _RegisterPgaeState extends State<RegisterPgae> {
                                           '선택 완료',
                                           style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 14),
+                                              fontSize: 14)
                                         ),
                                         style: ButtonStyle(
                                           shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
+                                                  BorderRadius.circular(30)
+                                            )
                                           ),
                                           backgroundColor:
                                               MaterialStateProperty.all<Color>(
                                                   Color.fromRGBO(
-                                                      217, 217, 217, 1)),
-                                        ),
-                                      ),
+                                                      217, 217, 217, 1))
+                                        )
+                                      )
                                     )
-                                  ],
-                                ),
-                              ),
-                            ]),
+                                  ]
+                                )
+                              )
+                            ])
                       )
                     : Column()
               ],

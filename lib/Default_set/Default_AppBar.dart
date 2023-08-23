@@ -1,5 +1,4 @@
 // ignore_for_file: sized_box_for_whitespace, file_names, camel_case_types
-import 'package:flutter_medicine/All_alarm.dart';
 import 'package:flutter/material.dart';
 import '../Icon/custom_icon.dart';
 
@@ -62,4 +61,3 @@ class _Custom_AppbarState extends State<Custom_Appbar> {
     );
   }
 }
-

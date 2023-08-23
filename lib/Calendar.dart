@@ -32,7 +32,7 @@ class _CalendarState extends State<Calendar> {
   Map<DateTime, List<Medicine>> events = {
     DateTime.utc(2023, 8, 7): [Medicine('title')],
     DateTime.utc(2023, 8, 13): [Medicine('title'), Medicine('title2')],
-    DateTime.utc(2023, 8, 14): [Medicine('title3')],
+    DateTime.utc(2023, 8, 14): [Medicine('title3')]
   };
 
   List<Medicine> _getEventsForDay(DateTime day) {

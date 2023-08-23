@@ -37,7 +37,9 @@ class _Medicine_detailState extends State<Medicine_detail> {
       List<Map<String, dynamic>> responseData = json.decode(response.body);
       for (var medicine in responseData) {
         if (name == medicine['name']) {
-          Medicine = responseData;
+          setState(() {
+            Medicine = responseData;
+          });
         }
       }
     } else {

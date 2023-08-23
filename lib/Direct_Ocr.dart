@@ -28,8 +28,7 @@ class _CameraState extends State<Camera> {
   bool screen_4 = false;
   String? text;
   bool Fav = false;
-  List<Widget> Reg_Pharmacy_List = [];
-  List<Widget> Near_Pharmacy_List = [];
+
   int? id;
   double screenWidth = 0;
   double screenHeight = 0;
@@ -90,6 +89,7 @@ class _CameraState extends State<Camera> {
       var responseData = json.decode(utf8.decode(response.bodyBytes));
       for (var pharmacy in responseData) {
         setState(() {
+          Reg_List.add(pharmacy);
           Near_List.add(Make_Pharmacy_List_View(pharmacy));
         });
       }
@@ -112,54 +112,64 @@ class _CameraState extends State<Camera> {
               )),
               elevation: MaterialStateProperty.all<double>(1),
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+              SizedBox(
+                height: 10,
+              ),
+              Row(
                 children: [
-                  SizedBox(
-                    height: 10,
+                  Icon(
+                    Icons.keyboard_arrow_right_sharp,
+                    color: Colors.black,
+                    size: 22,
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.keyboard_arrow_right_sharp,
-                        color: Colors.black,
-                        size: 22,
-                      ),
-                      Text(pharmacy["care_institution_name"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontFamily: 'NotoSnasKR',
-                              fontWeight: FontWeight.w700)),
-                    ],
-                  ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10, left: 10),
-                    child: Text(
-                      limitString(pharmacy["address"]),
+                  Text(pharmacy["care_institution_name"],
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 12,
+                          fontSize: 17,
                           fontFamily: 'NotoSnasKR',
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
+                          fontWeight: FontWeight.w700)),
                 ],
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, left: 10),
+                child: Text(
+                  limitString(pharmacy["address"]),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: 'NotoSnasKR',
+                      fontWeight: FontWeight.w700),
+                ),
               ),
             ],
           ),
           onPressed: () {
             setState(() {
-              selected_pharmacy = pharmacy;
               screen_4 = false;
+              selected_pharmacy = pharmacy;
             });
           },
         ),
       ),
     );
+  }
+
+  cut_List_View(String input) {
+    setState(() {
+      Near_List.clear();
+    });
+    for (var pharmacy in Reg_List) {
+      if (pharmacy['care_institution_name'].contains(input)) {
+        setState(() {
+          Near_List.add(Make_Pharmacy_List_View(pharmacy));
+        });
+      }
+    }
   }
 
   // 비동기 처리를 통해 카메라와 갤러리에서 이미지를 가져온다.
@@ -430,6 +440,8 @@ class _CameraState extends State<Camera> {
                                       : screen_2 == true
                                           ? Column(children: [
                                               Container(
+                                                  alignment:
+                                                      Alignment.topCenter,
                                                   padding: EdgeInsets.all(20),
                                                   width: screenWidth * 0.75,
                                                   height: screenHeight * 0.33,
@@ -606,7 +618,7 @@ class _CameraState extends State<Camera> {
                                               ? Column(children: [
                                                   SizedBox(
                                                       height:
-                                                          screenHeight * 0.15),
+                                                          screenHeight * 0.1),
                                                   Container(
                                                       decoration: BoxDecoration(
                                                           color: Color(0xff7885F8)
@@ -719,15 +731,18 @@ class _CameraState extends State<Camera> {
                                         Text(
                                           '내 주변 약국',
                                           style: TextStyle(color: Colors.black),
-                                        )
+                                        ),
                                       ],
                                     )),
                         ),
-                        SingleChildScrollView(
-                            child: Column(
-                          children:
-                              Fav ? Reg_Pharmacy_List : Near_Pharmacy_List,
-                        ))
+                        SizedBox(height: 10),
+                        Container(
+                          height: screenHeight * 0.6,
+                          child: SingleChildScrollView(
+                              child: Column(
+                            children: Fav ? Fav_List : Near_List,
+                          )),
+                        )
                       ])),
                   SizedBox(height: screenHeight * 0.03),
                   Container(
@@ -745,8 +760,27 @@ class _CameraState extends State<Camera> {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(90),
                                     color: Colors.white),
-                                child: Icon(Icons.search,
-                                    color: Color(0xff7885F8), size: 30)),
+                                child: Stack(
+                                  children: [
+                                    Icon(Icons.search,
+                                        color: Color(0xff7885F8), size: 30),
+                                    ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.transparent),
+                                            shadowColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.transparent)),
+                                        onPressed: () {
+                                          if (!pharmacy_name_controller
+                                              .text.isEmpty)
+                                            cut_List_View(
+                                                pharmacy_name_controller.text);
+                                        },
+                                        child: Text(''))
+                                  ],
+                                )),
                             Padding(
                               padding:
                                   const EdgeInsets.only(left: 30, right: 30),
@@ -755,6 +789,12 @@ class _CameraState extends State<Camera> {
                                   child: TextField(
                                     style: TextStyle(),
                                     controller: pharmacy_name_controller,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        cut_List_View(
+                                            pharmacy_name_controller.text);
+                                      });
+                                    },
                                     decoration: InputDecoration(
                                         isDense: true,
                                         hintText: '약국 이름을 직접 검색하세요',

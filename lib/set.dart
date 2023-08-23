@@ -1,15 +1,9 @@
 // ignore_for_file: sized_box_for_whitespace, non_constant_identifier_names, file_names, library_private_types_in_public_api, camel_case_types, unused_element, unrelated_type_equality_checks, prefer_interpolation_to_compose_strings, sort_child_properties_last
 import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:flutter_medicine/blank.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_medicine/Default_set/Default_Logo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -55,14 +49,28 @@ class _Medi_SetState extends State<Medi_Set> {
   ];
   Map<DateTime, List<Medicine>> Day_Medicine = {
     DateTime.utc(2023, 8, 22): [
-      Medicine('2', DateTime.utc(2023, 8, 13), Colors.red, true, 1, true,
-          {'점심': '9:00'}),
-      Medicine('3', DateTime.utc(2023, 8, 13), Colors.red, true, 1, false,
-          {'점심': '8:00'})
+      Medicine(
+          '2',
+          DateTime.utc(2023, 8, 22),
+          Colors.blue,
+          true,
+          1,
+          true,
+          {'점심': '9:00'},
+          {
+            DateTime.utc(2023, 8, 13): false,
+          },
+          '테마'),
+      Medicine('3', DateTime.utc(2023, 8, 22), Colors.red, true, 1, false,
+          {'점심': '8:00'}, {DateTime.utc(2023, 8, 13): false}, '테마')
+    ],
+    DateTime.utc(2023, 8, 23): [
+      Medicine('4', DateTime.utc(2023, 8, 23), Colors.red, true, 2, false,
+          {'점심': "7:00"}, {DateTime.utc(2023, 8, 24): false}, '테마')
     ],
     DateTime.utc(2023, 8, 24): [
-      Medicine('4', DateTime.utc(2023, 8, 14), Colors.red, true, 1, false,
-          {'점심': "7:00"})
+      Medicine('4', DateTime.utc(2023, 8, 23), Colors.red, true, 2, false,
+          {'점심': "7:00"}, {DateTime.utc(2023, 8, 24): false}, '테마')
     ],
   };
   late Medicine New_Medicine;
@@ -154,7 +162,10 @@ class _Medi_SetState extends State<Medi_Set> {
       ElevatedButton(
           onPressed: () {
             if (Day_Medicine.containsKey(medicine.startday)) {
-              setState() {}
+              setState() {
+                state = 2;
+                day = _selectedDay;
+              }
             }
           },
           child: Text('수정')),
@@ -193,7 +204,9 @@ class _Medi_SetState extends State<Medi_Set> {
             medicine["alarm"],
             medicine["duration"],
             medicine["repeat"],
-            json.decode(utf8.decode(medicine["time"]))));
+            json.decode(utf8.decode(medicine["time"])),
+            medicine["check"],
+            '테마'));
       }
     }
   }
@@ -290,7 +303,9 @@ class _Medi_SetState extends State<Medi_Set> {
                                 calendarStyle: CalendarStyle(
                                     cellMargin: EdgeInsets.all(6),
                                     cellPadding: EdgeInsets.all(0),
-                                    isTodayHighlighted: true),
+                                    isTodayHighlighted: true,
+                                    markerDecoration: BoxDecoration(
+                                        color: Colors.transparent)),
                                 locale: 'ko_KR',
                                 firstDay: DateTime.utc(2023, 1, 1),
                                 lastDay: DateTime.utc(2024, 12, 31),
@@ -332,25 +347,24 @@ class _Medi_SetState extends State<Medi_Set> {
                         SingleChildScrollView(
                           child: state == 1
                               ? Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.75),
+                                      borderRadius: BorderRadius.circular(15)),
                                   width: screenWidth * 0.85,
                                   height: screenHeight * 0.6,
-                                  child: Column(
-                                    children: Day_Medicine_Widget,
-                                  ),
+                                  child: medicine_list(),
                                 )
                               : Container(),
                         ),
+                        SizedBox(height: 30),
                         Container(
                             alignment: Alignment.center,
                             height: screenHeight * 0.06,
                             child: TextButton(
-                              child: Expanded(
-                                child: Text(
-                                  '복용 알림 추가',
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                              child: Text(
+                                '복용 알림 추가',
+                                style: TextStyle(color: Colors.white),
                               ),
-                              style: ButtonStyle(),
                               onPressed: () {
                                 setState(() {
                                   state = 2;
@@ -1326,6 +1340,17 @@ class _Medi_SetState extends State<Medi_Set> {
                                                           int duration = int.parse(
                                                               DurationController
                                                                   .text);
+                                                          Map<DateTime, bool>
+                                                              just_check = {};
+                                                          for (int i = 0;
+                                                              i < duration;
+                                                              i++) {
+                                                            just_check[startday
+                                                                    .add(Duration(
+                                                                        days:
+                                                                            i))] =
+                                                                false;
+                                                          }
                                                           if (Medi_name_cntroller.text.isEmpty == false &&
                                                                   DurationController
                                                                           .text
@@ -1371,7 +1396,9 @@ class _Medi_SetState extends State<Medi_Set> {
                                                                                   '$sep_controller1': '${_selectedTime1.hour}:${_selectedTime1.microsecond}',
                                                                                   '$sep_controller2': '${_selectedTime2.hour}:${_selectedTime2.microsecond}',
                                                                                   '$sep_controller3': '${_selectedTime3.hour}:${_selectedTime3.microsecond}'
-                                                                                });
+                                                                                },
+                                                                      just_check,
+                                                                      '테마');
                                                               for (int i = 0;
                                                                   i < duration;
                                                                   i++) {
@@ -1558,6 +1585,10 @@ class _Medi_SetState extends State<Medi_Set> {
                                                           EdgeInsets.all(6),
                                                       cellPadding:
                                                           EdgeInsets.all(0),
+                                                      markerDecoration:
+                                                          BoxDecoration(
+                                                              color: Colors
+                                                                  .transparent),
                                                       isTodayHighlighted: true),
                                                   locale: 'ko_KR',
                                                   firstDay:
@@ -1635,6 +1666,71 @@ class _Medi_SetState extends State<Medi_Set> {
                       : Container(),
             ]))));
   }
+
+  Widget medicine_list() {
+    return ValueListenableBuilder<List<Medicine>>(
+        valueListenable: _selectedMedicines,
+        builder: (context, medicines, _) {
+          String calculate(DateTime time, int num) {
+            DateTime S_time = time.add(Duration(days: num));
+            return '${time.year}-${time.month}-${time.day}~${S_time.year}-${S_time.month}-${S_time.day}';
+          }
+
+          return Expanded(
+              child: ListView.builder(
+                  itemCount: medicines.length,
+                  padding: EdgeInsets.all(0),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(
+                          top: 10, bottom: 10, left: 30, right: 30),
+                      decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.75),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(children: [
+                        SizedBox(width: 10),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(medicines[index].name),
+                            SizedBox(height: 3),
+                            Text(
+                              calculate(medicines[index].startday,
+                                  medicines[index].duration),
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.grey),
+                            )
+                          ],
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                state = 2;
+                              });
+                            },
+                            child: Text('수정'),
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                fixedSize:
+                                    MaterialStateProperty.all(Size(70, 20)),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.grey)),
+                          ),
+                        ),
+                      ]),
+                    );
+                  }));
+        });
+  }
 }
 
 class Medicine {
@@ -1645,6 +1741,8 @@ class Medicine {
   int duration;
   bool repeat;
   Map<String, String> Time;
+  Map<DateTime, bool> check;
+  String category;
   Medicine(this.name, this.startday, this.color, this.alarm, this.duration,
-      this.repeat, this.Time);
+      this.repeat, this.Time, this.check, this.category);
 }

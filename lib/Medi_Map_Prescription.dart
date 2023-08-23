@@ -176,230 +176,185 @@ class Medi_Map_PrescriptionState extends State<Medi_Map_Prescription> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        constraints: BoxConstraints(
-          minHeight: screenHeight,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          constraints: BoxConstraints(
+            minHeight: screenHeight,
           ),
-        ),
-        child: Column(
-          children: [
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(children: [
             Default_Logo(),
-            Column(
-              children: [
-                Container(
-                    height: screenHeight * 0.32,
-                    width: screenWidth * 0.88,
-                    decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.85),
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
-                    child: Column(
-                      children: [
-                        Column(
+            Column(children: [
+              Container(
+                  height: screenHeight * 0.32,
+                  width: screenWidth * 0.88,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.85),
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: Column(children: [
+                    Column(children: [
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Container(
-                                      width: screenWidth * 0.5,
-                                      child: OutlinedButton(
-                                          style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
-                                          )),
-                                          onPressed: () {},
-                                          child: Fav
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(Icons
-                                                        .not_listed_location_outlined),
-                                                    Text(
-                                                      '즐겨찾기 약국',
-                                                      style: TextStyle(
-                                                          color: Colors.black),
-                                                    )
-                                                  ],
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.location_on_sharp,
-                                                      color: Colors.black,
-                                                    ),
-                                                    Text(
-                                                      '내 주변 약국',
-                                                      style: TextStyle(
-                                                          color: Colors.black),
-                                                    )
-                                                  ],
-                                                )),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 20),
-                                        child: Container(
-                                          width: screenWidth * 0.12,
-                                          height: screenHeight * 0.08,
-                                          color: Colors.purple,
-                                          child: Icon(Icons.star,
-                                              size: 45,
-                                              color: Fav
-                                                  ? Colors.blue[300]
-                                                  : Colors.grey),
-                                        ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                width: screenWidth * 0.5,
+                                child: OutlinedButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
-                                    ],
-                                  )
-                                ]),
-                            Container(
-                              width: screenWidth * 0.7,
-                              height: screenHeight * 0.2,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text('$name',
-                                            style: TextStyle(fontSize: 25)),
-                                        Icon(Icons.phone),
-                                        Spacer(),
-                                        Icon(
-                                          Icons.star,
-                                          color: fav
-                                              ? Colors.blue[300]
-                                              : Colors.grey,
-                                          size: screenHeight * 0.05,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          '전화',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14),
-                                        ),
-                                        SizedBox(width: screenWidth * 0.06),
-                                        Text(
-                                          '$phone_number',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          '주소',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14),
-                                        ),
-                                        SizedBox(
-                                          width: screenWidth * 0.06,
-                                        ),
-                                        Container(
-                                          child: Text(
-                                            cutting('$address'),
-                                            maxLines: 3,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                    )),
+                                    onPressed: () {},
+                                    child: Fav
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons
+                                                  .not_listed_location_outlined),
+                                              Text(
+                                                '즐겨찾기 약국',
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              )
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.location_on_sharp,
+                                                color: Colors.black,
+                                              ),
+                                              Text(
+                                                '내 주변 약국',
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              )
+                                            ],
+                                          )),
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    )),
-                SizedBox(height: screenHeight * 0.01),
-                Container(
-                    height: screenHeight * 0.45,
-                    width: screenWidth * 0.88,
-                    decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.85),
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15.0),
+                            Spacer(),
+                            Column(children: [
+                              Padding(
+                                  padding: const EdgeInsets.only(right: 20),
                                   child: Container(
-                                    width: screenWidth * 0.5,
-                                    child: Row(
+                                      width: screenWidth * 0.12,
+                                      height: screenHeight * 0.08,
+                                      color: Colors.purple,
+                                      child: Icon(Icons.star,
+                                          size: 45,
+                                          color: Fav
+                                              ? Colors.blue[300]
+                                              : Colors.grey)))
+                            ])
+                          ]),
+                      Container(
+                          width: screenWidth * 0.7,
+                          height: screenHeight * 0.2,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(children: [
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(children: [
+                                  Text('$name', style: TextStyle(fontSize: 25)),
+                                  Icon(Icons.phone),
+                                  Spacer(),
+                                  Icon(
+                                    Icons.star,
+                                    color: fav ? Colors.blue[300] : Colors.grey,
+                                    size: screenHeight * 0.05,
+                                  )
+                                ])),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(children: [
+                                  Text(
+                                    '전화',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                  SizedBox(width: screenWidth * 0.06),
+                                  Text('$phone_number',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                      ))
+                                ])),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(children: [
+                                  Text(
+                                    '주소',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                  SizedBox(
+                                    width: screenWidth * 0.06,
+                                  ),
+                                  Container(
+                                      child: Text(cutting('$address'),
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                          )))
+                                ]))
+                          ]))
+                    ])
+                  ])),
+              SizedBox(height: screenHeight * 0.01),
+              Container(
+                  height: screenHeight * 0.45,
+                  width: screenWidth * 0.88,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.85),
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: SingleChildScrollView(
+                      child: Column(children: [
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                  width: screenWidth * 0.5,
+                                  child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                             Icons.not_listed_location_outlined),
-                                        Text(
-                                          '지난 처방전 보기',
-                                          style: TextStyle(color: Colors.black),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ]),
-                          Container(
-                            width: screenWidth * 0.7,
-                            height: screenHeight * 10,
-                            child: SingleChildScrollView(
-                                child: Column(
-                              children: [
-                                Column(
-                                  children: Prescription_List,
-                                ),
-                              ],
-                            )),
-                          ),
-                        ],
-                      ),
-                    ))
-              ],
-            ),
-          ],
-        ),
-      ),
+                                        Text('지난 처방전 보기',
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                      ])))
+                        ]),
+                    Container(
+                        width: screenWidth * 0.7,
+                        height: screenHeight * 10,
+                        child: SingleChildScrollView(
+                            child: Column(children: [
+                          Column(
+                            children: Prescription_List,
+                          )
+                        ])))
+                  ])))
+            ])
+          ])),
       bottomNavigationBar: Default_bottomAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(

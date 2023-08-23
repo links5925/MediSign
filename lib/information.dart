@@ -37,6 +37,8 @@ class _InformationState extends State<Information> {
     for (var disease in loaddisease) {
       setState(() {
         disease_list.add(Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(
               Icons.circle,
@@ -97,133 +99,130 @@ class _InformationState extends State<Information> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: screenHeight * 0.7,
-                    child: Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24, bottom: 10),
-                        child: ClipOval(
-                          child: Image.network(
-                            profile ??
-                                'https://picsum.photos/200/200', // 이미지 URL
-                            width: screenHeight * 0.12, // 원형 이미지의 가로
-                            height: screenHeight * 0.12, // 원형 이미지의 세로 길이
-                            fit: BoxFit.cover, // 이미지를 원형에 맞게 조정
-                          ),
+                      height: screenHeight * 0.7,
+                      child: Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24, bottom: 10),
+                          child: Image(
+                              image: AssetImage('assets/image/graph 1.png')),
                         ),
-                      ),
-                      Text(
-                        name,
-                        style: TextStyle(fontSize: 30, color: Colors.black),
-                      ),
-                      SizedBox(
-                        width: screenWidth * 0.7,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 4),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '성별',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    gender,
-                                    style: TextStyle(fontSize: 18),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: Colors.black,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 4),
-                              child: Row(
-                                children: [
-                                  Text('키', style: TextStyle(fontSize: 18)),
-                                  Spacer(),
-                                  Text(
-                                    '$height' 'CM',
-                                    style: TextStyle(fontSize: 18),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: Colors.black,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 4),
-                              child: Row(
-                                children: [
-                                  Text('몸무게', style: TextStyle(fontSize: 18)),
-                                  Spacer(),
-                                  Text(
-                                    '$weight' 'KG',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: Colors.black,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 4),
-                              child: Row(
-                                children: [
-                                  Text('혈액형', style: TextStyle(fontSize: 18)),
-                                  Spacer(),
-                                  Text(
-                                    '$blood_type' '형',
-                                    style: TextStyle(fontSize: 18),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: Colors.black,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 4),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '나의 지병 내역',
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                      Column(
-                                        children: disease_list,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        Text(
+                          name,
+                          style: TextStyle(fontSize: 30, color: Colors.black),
                         ),
-                      ),
-                    ]),
-                  ),
+                        SizedBox(
+                            width: screenWidth * 0.7,
+                            child: Column(children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 4, bottom: 4),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '성별',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    Spacer(),
+                                    Text(
+                                      gender,
+                                      style: TextStyle(fontSize: 18),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: Colors.black,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 4, bottom: 4),
+                                child: Row(
+                                  children: [
+                                    Text('키', style: TextStyle(fontSize: 18)),
+                                    Spacer(),
+                                    Text(
+                                      '$height' 'CM',
+                                      style: TextStyle(fontSize: 18),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: Colors.black,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 4, bottom: 4),
+                                child: Row(
+                                  children: [
+                                    Text('몸무게', style: TextStyle(fontSize: 18)),
+                                    Spacer(),
+                                    Text(
+                                      '$weight' 'KG',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: Colors.black,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 4, bottom: 4),
+                                child: Row(
+                                  children: [
+                                    Text('혈액형', style: TextStyle(fontSize: 18)),
+                                    Spacer(),
+                                    Text(
+                                      '$blood_type' '형',
+                                      style: TextStyle(fontSize: 18),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: Colors.black,
+                              ),
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 4, bottom: 4),
+                                  child: Row(children: [
+                                    Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '나의 지병 내역',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: disease_list,
+                                          )
+                                        ])
+                                  ]))
+                            ]))
+                      ])),
                   SizedBox(
                     width: screenWidth * 0.7,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/change_info');
+                      },
                       child: Row(
                         children: [
                           Icon(

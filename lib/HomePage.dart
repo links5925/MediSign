@@ -1,13 +1,12 @@
 // ignore_for_file: sort_child_properties_last
 
-import 'dart:math';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'Default_set/Default_AppBar.dart';
 import 'Calendar.dart';
 import 'Default_set/Default_BottomAppBar.dart';
 import 'Default_set/Default_Drawer.dart';
+import 'Medicine_Detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+    TextEditingController ctrl = TextEditingController();
+
   String name = '';
   String birthdate = '';
   String bloodType = '';
@@ -32,6 +33,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserInfo();
+  }
+
+  Future<void> _post_name(String name) async {
+    SharedPreferences user_info = await SharedPreferences.getInstance();
+    user_info.setString('post_name', name);
   }
 
   Future<void> _loadUserInfo() async {
@@ -53,6 +59,8 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         for (var disease in loaddisease) {
           disease_list.add(Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
                 Icons.circle,
@@ -110,8 +118,16 @@ class _HomePageState extends State<HomePage> {
                         child: Container(
                           height: screenHeight * 0.038,
                           width: 0.9 * screenWidth,
-                          child: TextField(
+                          child: TextField(controller: ctrl,
                             autofocus: false,
+                            onSubmitted: (value) {
+                              _post_name(ctrl.text);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Medicine_detail(),
+                                  ));
+                            },
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: -7),
@@ -125,11 +141,9 @@ class _HomePageState extends State<HomePage> {
                               fillColor: Color.fromRGBO(217, 217, 217, 1),
                               hintText: '궁금한 약에 대해서 검색해보세요:',
                               hintStyle: TextStyle(
-                                fontSize:
-                                    screenWidth * 0.033, // 힌트 텍스트의 글꼴 크기 설정
-                                color: Colors.black, // 힌트 텍스트의 색상 설정
-                                fontWeight:
-                                    FontWeight.w400, // 힌트 텍스트의 폰트 굵기 설정,
+                                fontSize: screenWidth * 0.033,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
                               ),
                               suffixIcon: Transform.translate(
                                 offset: Offset(0, -7),
@@ -271,6 +285,10 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         SizedBox(height: 10),
                                         Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: disease_list,
                                         ),
                                       ],
@@ -326,9 +344,9 @@ class _HomePageState extends State<HomePage> {
                                   Text('메디캘린더',
                                       style: TextStyle(
                                           fontSize: screenWidth * 0.044)),
-                                  SizedBox(width: screenWidth * 0.025),
+                                  SizedBox(width: screenWidth * 0.14),
                                   Container(
-                                      width: screenWidth * 0.49,
+                                      width: screenWidth * 0.37,
                                       height: screenHeight * 0.03,
                                       child: ElevatedButton(
                                           onPressed: () {
@@ -336,10 +354,14 @@ class _HomePageState extends State<HomePage> {
                                                 '/Medi_Calendar_Medicine');
                                           },
                                           child: Row(children: [
-                                            Icon(Icons.mode_edit_outlined,
-                                                color: Colors.black, size: 18),
-                                            SizedBox(width: 10),
-                                            Text('나의 메디캘린더 수정하기',
+                                            Transform.translate(
+                                              offset: Offset(-5, 0),
+                                              child: Icon(
+                                                  Icons.mode_edit_outlined,
+                                                  color: Colors.black,
+                                                  size: 18),
+                                            ),
+                                            Text('복용 알림 설정하기',
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 12))

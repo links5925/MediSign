@@ -1,7 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'dart:ui';
-import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -176,17 +175,23 @@ class _Medi_MapState extends State<Medi_Map> {
                             onPressed: () {
                               int state = -1;
                               if (B_Fav_List.contains(pharmacy) == true) {
+                                state = B_Fav_List.indexOf(pharmacy);
                                 setState(() {
-                                  Fav_List.remove(
-                                      Make_Pharmacy_List_View(pharmacy));
-                                  B_Fav_List.remove(pharmacy);
+                                  Fav_List.removeAt(state);
+                                  B_Fav_List.removeAt(state);
+                                  Fav_List;
+                                  B_Fav_List;
+                                  Near_List;
                                 });
                               } else {
-                                B_Fav_List.add(pharmacy);
-                                Fav_List.add(Make_Pharmacy_List_View(pharmacy));
+                                setState(() {
+                                  B_Fav_List.add(pharmacy);
+                                  Fav_List.add(
+                                      Make_Pharmacy_List_View(pharmacy));
+                                  Fav_List;
+                                  Near_List;
+                                });
                               }
-                              Fav_List;
-                              Near_List;
                             },
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
@@ -483,9 +488,7 @@ class Medi_Map_DetailState extends State<Medi_Map_Detail> {
     var status = await Permission.location.status;
     if (requestStatus.isGranted && status.isLimited) {
       print("isGranted");
-      if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
-        var position = await Geolocator.getCurrentPosition();
-      }
+      if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {}
     }
   }
 

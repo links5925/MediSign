@@ -89,84 +89,69 @@ class _LoginPageState extends State<LoginPage> {
           width: screenWidth,
           height: screenHeight,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+              gradient: LinearGradient(
+            colors: [Color(0xff627BFD), Color(0xffE3EBFF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: screenHeight * 0.6,
-                  width: screenWidth * 0.9,
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    height: screenHeight * 0.5,
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: screenHeight * 0.1,
-                            ),
-                            ClipOval(
-                              child: Image.network(
-                                'https://picsum.photos/200/200', // 이미지 URL
-                                width: screenHeight * 0.12, // 원형 이미지의 가로
-                                height: screenHeight * 0.12, // 원형 이미지의 세로 길이
-                                fit: BoxFit.cover, // 이미지를 원형에 맞게 조정
-                              ),
-                            ),
+                    height: screenHeight * 0.6,
+                    width: screenWidth * 0.9,
+                    decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Container(
+                        height: screenHeight * 0.5,
+                        child: Column(children: [
+                          Column(children: [
+                            SizedBox(height: screenHeight * 0.1),
+                            Image(
+                                image: AssetImage('assets/image/graph 1.png')),
                             Container(
                                 width: screenWidth * 0.77,
                                 child: TextField(
-                                  controller: _EmailController,
-                                  showCursor: false,
-                                  decoration: InputDecoration(hintText: '이메일'),
-                                )),
+                                    controller: _EmailController,
+                                    showCursor: false,
+                                    decoration:
+                                        InputDecoration(hintText: '이메일'))),
                             Container(
                                 width: screenWidth * 0.77,
                                 child: TextField(
-                                  controller: _PasswordController,
-                                  showCursor: false,
-                                  decoration: InputDecoration(hintText: '비밀번호'),
-                                )),
-                          ],
-                        ),
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Container(
-                                height: 30,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    color: Color(0xff7885f8).withOpacity(0.7),
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: TextButton(
-                                  child: Text(
-                                    '회원가입',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/Register');
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                                    controller: _PasswordController,
+                                    showCursor: false,
+                                    decoration:
+                                        InputDecoration(hintText: '비밀번호')))
+                          ]),
+                          Spacer(),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Container(
+                                        height: 30,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff7885f8)
+                                                .withOpacity(0.7),
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: TextButton(
+                                            child: Text(
+                                              '회원가입',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, '/Register');
+                                            })))
+                              ])
+                        ]))),
                 SizedBox(
                   height: screenHeight * 0.04,
                 ),
