@@ -374,7 +374,9 @@ class _Medi_Calendar_MedicineState extends State<Medi_Calendar_Medicine> {
                                         height: screenHeight * 0.08,
                                         child: ElevatedButton(
                                             onPressed: () {
-                                              setState(() {});
+                                              setState(() {
+                                                show_color = true;
+                                              });
                                             },
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
